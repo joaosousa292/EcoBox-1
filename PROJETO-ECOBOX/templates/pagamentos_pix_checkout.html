@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Pagamento PIX — EcoBox</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ecobox-dark: #0a3627;
+      --ecobox-accent: #39d77a;
+      --muted: #4f6b58;
+      --bg: linear-gradient(180deg,#f5fbf7,#e8f6ec);
+      --card-bg: #ffffff;
+      --radius: 16px;
+      --shadow: 0 22px 55px rgba(6,30,18,0.10);
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      font-family:"Poppins",sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:80px 16px;
+      color:var(--ecobox-dark);
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1050px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .pix-card{
+      width:100%;
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:32px;
+      display:grid;
+      grid-template-columns: 1fr 400px;
+      gap:26px;
+      transform:translateY(25px);
+    }
+
+    @media(max-width:950px){
+      .pix-card{
+        grid-template-columns:1fr;
+        padding:22px;
+      }
+    }
+
+    /* HEADER */
+    .header{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .header-title h1{
+      margin:0;
+      font-size:1.7rem;
+      font-weight:700;
+      letter-spacing:-0.5px;
+      color:var(--ecobox-dark);
+    }
+
+    .header-title p{
+      margin-top:4px;
+      font-size:1.05rem;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .logo-box img{
+      width:70px;
+      height:70px;
+      border-radius:14px;
+      object-fit:cover;
+      box-shadow:0 10px 28px rgba(6,30,18,0.08);
+    }
+
+    /* LEFT COLUMN */
+    .left{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    .qr-area{
+      background:#fff;
+      padding:26px;
+      border-radius:18px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.06);
+      display:flex;
+      justify-content:center;
+    }
+
+    .qr-wrap{
+      width:420px;
+      height:420px;
+      background:white;
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 30px rgba(6,30,18,0.04);
+    }
+
+    .qr-wrap img{
+      max-width:100%;
+      max-height:100%;
+      display:block;
+    }
+
+    .qr-caption{
+      text-align:center;
+      font-size:1.03rem;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    /* RIGHT COLUMN */
+    .right{
+      display:flex;
+      flex-direction:column;
+      gap:22px;
+    }
+
+    .panel{
+      background:#ffffff;
+      padding:20px;
+      border-radius:14px;
+      border:1px solid rgba(57,215,122,0.12);
+      box-shadow:0 8px 20px rgba(0,0,0,0.03);
+    }
+
+    .amount{
+      font-size:2rem;
+      font-weight:800;
+      color:var(--ecobox-dark);
+    }
+
+    .muted{
+      font-size:1rem;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .merchant-line{
+      margin-top:10px;
+      font-size:1.05rem;
+      color:var(--ecobox-dark);
+      font-weight:600;
+    }
+
+    .payload{
+      margin-top:16px;
+      padding:16px;
+      background:#f1fff6;
+      border-radius:12px;
+      border:1px solid rgba(57,215,122,0.25);
+      font-family:monospace;
+      font-size:1rem;
+      max-height:200px;
+      overflow:auto;
+      word-break:break-all;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      margin-top:16px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      padding:12px 18px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:1.05rem;
+      display:flex;
+      align-items:center;
+      text-decoration:none;
+    }
+
+    .btn-primary{
+      background:linear-gradient(180deg,var(--ecobox-accent),#29a85d);
+      color:#012;
+      box-shadow:0 8px 20px rgba(37,147,81,0.18);
+    }
+
+    .btn-outline{
+      background:transparent;
+      border:2px solid rgba(6,30,18,0.12);
+      color:var(--ecobox-dark);
+    }
+
+    .btn-confirm{
+      width:100%;
+      background:linear-gradient(180deg,#38d77a,#1faa57);
+      margin-top:10px;
+      color:#012;
+      font-size:1.15rem;
+      padding:14px;
+    }
+
+    .note{
+      margin-top:10px;
+      font-size:0.95rem;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <div class="pix-card">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <div class="header">
+        <div class="header-title">
+          <h1>Pagamento via PIX</h1>
+          <p>Pedido <strong>#{{ pedido_id }}</strong> — escaneie o QR Code abaixo</p>
+        </div>
+
+        <div class="logo-box">
+          <img src="/static/img/ecobox_logo.png" alt="EcoBox">
+        </div>
+      </div>
+
+      <div class="qr-area">
+        <div class="qr-wrap">
+          <img src="data:image/png;base64,{{ qr_b64 }}" alt="QR Code PIX">
+        </div>
+      </div>
+
+      <div class="qr-caption">
+        Aponte a câmera do seu banco para pagar ou copie o código ao lado.
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+
+      <div class="panel">
+        <div class="amount">R$ {{ "%.2f"|format(total) }}</div>
+        <div class="muted">Valor do pedido</div>
+
+        <div class="merchant-line">
+          Recebedor: {{ merchant_name }}<br>
+          <span class="muted" style="font-size:0.95rem;">Chave: <strong>{{ merchant_key }}</strong></span>
+        </div>
+
+        <div class="payload" id="payloadBox">{{ payload }}</div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="copyPayload">Copiar código PIX</button>
+          <a class="btn btn-outline" href="data:image/png;base64,{{ qr_b64 }}" download="pix_{{ pedido_id }}.png">Baixar QR PNG</a>
+        </div>
+
+        <form method="POST" action="{{ url_for('confirmar_pagamento_pix') }}">
+          <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
+          <button type="submit" class="btn btn-confirm">Já paguei — Confirmar pagamento</button>
+        </form>
+
+        <div class="note">
+          Após pagar, clique em <strong>“Já paguei — Confirmar pagamento”</strong>.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById('copyPayload').addEventListener('click', function(){
+    const payload = document.getElementById('payloadBox').textContent.trim();
+    navigator.clipboard.writeText(payload).then(()=>{
+      const old = this.textContent;
+      this.textContent = "Copiado!";
+      setTimeout(()=> this.textContent = old, 1500);
+    });
+  });
+</script>
+
+</body>
+</html>

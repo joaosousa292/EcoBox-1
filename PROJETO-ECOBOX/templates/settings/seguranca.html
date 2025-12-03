@@ -1,0 +1,239 @@
+{% extends "settings/base.html" %}
+{% block content %}
+
+<style>
+/* Estilos locais específicos só para a aba Segurança (mantém o resto do tema) */
+.sec-card {
+  background: linear-gradient(180deg, rgba(20,46,28,0.45), rgba(10,30,20,0.25));
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  min-height: 320px;
+}
+
+/* Reaproveita .settings-item, mas com gap maior e inputs maiores */
+.sec-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.sec-row:last-child { border-bottom: none; }
+
+.sec-row span {
+  width: 210px;            /* espaço reservado para a "label" */
+  color: #dfffdc;
+  font-weight: 600;
+}
+
+/* inputs maiores e com estilo consistente */
+.sec-input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(63,191,102,0.12);
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  width: 420px;            /* largura generosa para o conteúdo */
+  max-width: calc(100% - 240px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+
+/* pequena área para o botão / controles */
+.sec-controls {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+/* toggle olho */
+.pw-eye {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #cfeccf;
+  padding: 6px;
+  border-radius:6px;
+}
+.pw-eye:hover { background: rgba(255,255,255,0.02); transform: translateY(-1px); }
+
+/* força da senha (barra) */
+.pw-strength {
+  height: 8px;
+  width: 420px;
+  max-width: calc(100% - 240px);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.pw-strength > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg,#f44336,#ff9800,#4caf50);
+  transition: width .28s ease;
+}
+
+/* texto auxiliar */
+.small-note {
+  font-size: 13px;
+  color: #cfeccf;
+  margin-left: 210px;
+  margin-top: 6px;
+}
+
+/* botão grande (mantém .save-button mas dá mais presença) */
+.save-button.big {
+  padding: 12px 28px;
+  font-size: 15px;
+}
+
+/* responsivo: empilha em telas pequenas */
+@media (max-width:820px){
+  .sec-row { flex-direction: column; align-items:flex-start; gap:10px; }
+  .sec-row span { width: 100%; }
+  .sec-input, .pw-strength > i, .pw-strength { width: 100%; max-width:100%; }
+  .small-note { margin-left: 0; }
+}
+</style>
+
+<div class="sec-card">
+  <h2 style="color:var(--green-light); margin-bottom:12px;">Segurança e Acesso</h2>
+  <p style="color:#cfeccf; margin-bottom:18px; max-width:760px;">
+    Altere sua senha com segurança. Use ao menos 8 caracteres; prefira combinar letras, números e símbolos.
+  </p>
+
+  <form method="POST" action="{{ url_for('atualizar_senha') }}" id="senhaForm">
+    <div class="sec-row">
+      <span>Senha Atual</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input class="sec-input" type="password" name="senha_atual" id="senha_atual" placeholder="Digite sua senha atual" required>
+        <button type="button" class="pw-eye" data-target="senha_atual" title="Mostrar/ocultar">
+          <i data-lucide="eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="sec-row">
+      <span>Nova Senha</span>
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input class="sec-input" type="password" name="nova_senha" id="nova_senha" placeholder="Nova senha (mínimo 8 caracteres)" required>
+          <button type="button" class="pw-eye" data-target="nova_senha" title="Mostrar/ocultar">
+            <i data-lucide="eye"></i>
+          </button>
+        </div>
+
+        <div class="pw-strength" aria-hidden="true"><i id="pwBar"></i></div>
+        <div class="small-note" id="pwHint">Força: <strong id="pwLabel">—</strong></div>
+      </div>
+    </div>
+
+    <div class="sec-row">
+      <span>Confirme a Nova Senha</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input class="sec-input" type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Confirme a nova senha" required>
+        <button type="button" class="pw-eye" data-target="confirmar_senha" title="Mostrar/ocultar">
+          <i data-lucide="eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <div style="margin-top:18px; display:flex; align-items:center; gap:18px;">
+      <button class="save-button big" type="submit">
+        <i data-lucide="lock" style="width:16px;height:16px;margin-right:8px"></i> Atualizar Senha
+      </button>
+      <div style="color:#cfeccf; font-size:14px;">
+        Dica: use 12+ caracteres para máxima segurança.
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+lucide.createIcons();
+
+// show/hide toggle for password fields
+document.querySelectorAll('.pw-eye').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    const targetId = btn.getAttribute('data-target');
+    const input = document.getElementById(targetId);
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d=\"M17.94 17.94A10.94 10.94 0 0 1 12 20c-5 0-9.27-3.11-11-7.5a10.94 10.94 0 0 1 1.64-3.02\"></path><path d=\"M1 1l22 22\"></path></svg>';
+    } else {
+      input.type = 'password';
+      // restore lucide icon
+      btn.innerHTML = '<i data-lucide=\"eye\"></i>';
+      lucide.createIcons();
+    }
+  });
+});
+
+// password strength meter (simple heuristic)
+const pw = document.getElementById('nova_senha');
+const pwBar = document.getElementById('pwBar');
+const pwLabel = document.getElementById('pwLabel');
+
+function scorePassword(s) {
+  if (!s) return 0;
+  let score = 0;
+  // length
+  score += Math.min(10, s.length) * 2;
+  // variety
+  if (/[a-z]/.test(s)) score += 10;
+  if (/[A-Z]/.test(s)) score += 10;
+  if (/[0-9]/.test(s)) score += 12;
+  if (/[^A-Za-z0-9]/.test(s)) score += 16;
+  // penalty for short
+  if (s.length < 8) score = Math.min(score, 20);
+  return Math.min(100, score);
+}
+
+function updateStrength() {
+  const s = pw.value || '';
+  const sc = scorePassword(s);
+  pwBar.style.width = sc + '%';
+  let label = 'Fraca';
+  if (sc >= 70) label = 'Forte';
+  else if (sc >= 45) label = 'Boa';
+  else if (sc > 20) label = 'Fraca';
+  else label = 'Muito fraca';
+  pwLabel.textContent = label;
+}
+
+pw && pw.addEventListener('input', updateStrength);
+
+// form submit client-side checks
+document.getElementById('senhaForm').addEventListener('submit', function(e){
+  const atual = document.getElementById('senha_atual').value.trim();
+  const nova = document.getElementById('nova_senha').value.trim();
+  const conf = document.getElementById('confirmar_senha').value.trim();
+
+  if (!atual || !nova || !conf) {
+    alert('Preencha todos os campos.');
+    e.preventDefault();
+    return;
+  }
+  if (nova.length < 8) {
+    alert('A nova senha deve ter pelo menos 8 caracteres.');
+    e.preventDefault();
+    return;
+  }
+  if (nova !== conf) {
+    alert('As senhas não coincidem.');
+    e.preventDefault();
+    return;
+  }
+  // opcional: warn if password weak
+  const sc = scorePassword(nova);
+  if (sc < 40 && !confirm('A senha parece fraca. Deseja prosseguir mesmo assim?')) {
+    e.preventDefault();
+    return;
+  }
+});
+</script>
+
+{% endblock %}

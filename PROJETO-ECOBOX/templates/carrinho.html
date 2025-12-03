@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Meu Carrinho — NewTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+    :root {
+        --green-light: #6cf28d;
+        --green: #35c86a;
+        --green-dark: #1f7a44;
+        --text-dark: #1f1f1f;
+        --text-light: #5d5d5d;
+        --bg-page: #f5f7f5;
+        --card-bg: #ffffff;
+        --border: #dfe6e2;
+    }
+
+    * {
+        margin: 0; padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        background: linear-gradient(180deg, var(--bg1), var(--bg2));
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /* -------------------------------- HEADER -------------------------------- */
+    header {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        padding: 18px 56px;
+        display: flex;
+        justify-content: center;
+        background: rgba(13, 43, 29, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #e6ece7;
+    }
+
+    nav {
+        display: flex;
+        gap: 50px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      nav a {
+        position: relative;
+        color: #c8ffb8;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        transition: color 0.3s ease, transform 0.3s ease;
+        padding-bottom: 6px;
+      }
+
+   nav a:hover {
+        color: #a5ff77;
+        transform: translateY(-2px);
+      }
+
+    nav a.active {
+        color: var(--green);
+    }
+
+    nav a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        width: 100%;
+        height: 3px;
+        background: var(--green);
+        border-radius: 3px;
+    }
+
+    nav i[data-lucide] {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* -------------------------------- CONTAINER -------------------------------- */
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 35px 40px;
+        border-radius: 22px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .title {
+        text-align: center;
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 35px;
+        color: var(--green-dark);
+    }
+
+    /* -------------------------------- ITENS DO CARRINHO -------------------------------- */
+    .item {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 14px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        transition: .25s;
+        margin-bottom: 18px;
+    }
+
+    .item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .item img {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 1px solid #eee;
+    }
+
+    .nome {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #212121;
+    }
+
+    .preco {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--green-dark);
+        margin-bottom: 10px;
+    }
+
+    .acoes {
+        text-align: right;
+        min-width: 140px;
+    }
+
+    /* INPUT DE QUANTIDADE */
+    .qtd {
+        width: 55px;
+        padding: 7px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        outline: none;
+        font-weight: 600;
+    }
+
+    /* BOTÃO ATUALIZAR */
+    button[type="submit"] {
+        padding: 8px 16px;
+        border-radius: 9px;
+        border: none;
+        margin-top: 6px;
+        font-weight: 600;
+        background: var(--green);
+        color: white;
+        cursor: pointer;
+        transition: .25s;
+    }
+
+    button[type="submit"]:hover {
+        background: var(--green-light);
+        transform: translateY(-2px);
+    }
+
+    /* REMOVER */
+    .btn-remove {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        background: #ff5b5b;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: .25s;
+    }
+
+    .btn-remove:hover {
+        background: #ff3e3e;
+    }
+
+    /* TOTAL GERAL */
+    .total {
+        text-align: right;
+        font-size: 26px;
+        font-weight: 700;
+        margin-top: 35px;
+        color: var(--green-dark);
+    }
+
+    /* BOTÃO FINALIZAR COMPRA */
+    .btn-finalizar {
+        display: block;
+        margin: 35px auto;
+        padding: 16px 40px;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(90deg, var(--green), var(--green-light));
+        color: white;
+        cursor: pointer;
+        transition: .25s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-finalizar:hover {
+        transform: translateY(-3px);
+    }
+
+    footer {
+        text-align: center;
+        padding: 26px;
+        margin-top: 60px;
+        color: #6e826e;
+    }
+
+
+
+/* ----------------------- MODAL PREMIUM BRANCO ----------------------- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 3000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 420px;
+  margin: 140px auto;
+  color: #222;
+  border: 1px solid #dfe6e2;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  animation: subir .35s ease;
+}
+
+.modal-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+#modalMensagem {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.5;
+}
+
+.btn-fechar {
+  width: 100%;
+  padding: 12px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.btn-fechar:hover {
+  background: var(--green-light);
+}
+
+@keyframes subir {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+</style>
+</head>
+
+<body>
+
+<header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+  <nav>
+    <a href="/site"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+      <div class="flash-msg {{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<style>
+  .flash-container {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    z-index: 999999;
+  }
+
+  .flash-msg {
+    padding: 14px 22px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: slideIn .4s ease-out, fadeOut 1s ease 4s forwards;
+  }
+
+  .flash-msg.sucesso,
+  .flash-msg.sucesso_cadastro {
+    background: #28a745;
+  }
+
+  .flash-msg.erro,
+  .flash-msg.erro_login,
+  .flash-msg.erro_cadastro {
+    background: #dc3545;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(30px); }
+  }
+</style>
+
+
+<script>lucide.createIcons();</script>
+
+<!-- CONTÊINER -->
+<div class="container">
+    <h1 class="title">🛒 Meu Carrinho</h1>
+    {% if itens %}
+        {% for item in itens %}
+        <div class="item">
+            <img src="{{ item.imagem }}" alt="Produto">
+
+            <div class="info">
+                <div class="nome">{{ item.nome }}</div>
+                <div class="preco">R$ {{ item.preco }}</div>
+
+                <form action="/atualizar_quantidade" method="POST">
+                    <input type="hidden" name="id" value="{{ item.carrinho_id }}">
+                    <label>Quantidade:</label>
+                    <input type="number" class="qtd" min="1" name="quantidade" value="{{ item.quantidade }}">
+                    <button type="submit"><strong>Atualizar</strong></button>
+                </form>
+            </div>
+
+            <div class="acoes">
+                <div class="preco">Total: R$ {{ item.total_item }}</div>
+                <br>
+                <a class="btn-remove" href="/remover_item/{{ item.carrinho_id }}">
+                    <i data-lucide="trash-2"></i> Remover
+                </a>
+            </div>
+
+        </div>
+        {% endfor %}
+
+        <div class="total">
+            Total Geral: R$ {{ total_geral }}
+        </div>
+
+    {% else %}
+        <p style="text-align:center; font-size:20px; color:var(--text-light);">Seu carrinho está vazio</p>
+    {% endif %}
+</div>
+
+<form action="/finalizar_compra" method="POST">
+  <button class="btn-finalizar">Finalizar Compra</button>
+</form>
+
+<footer>© 2025 Ecobox — Da Cidade para o Mundo.</footer>
+
+
+<!-- MODAL -->
+<div id="modalEstoque" class="modal">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h2>⚠ Estoque insuficiente</h2>
+      </div>
+
+      <p id="modalMensagem">
+          Você tentou adicionar mais unidades do que temos disponível no momento.
+      </p>
+
+      <button class="btn-fechar" onclick="fecharModal()">Entendi</button>
+  </div>
+</div>
+
+<script>
+function abrirModal(msg) {
+  document.getElementById("modalMensagem").innerText = msg;
+  document.getElementById("modalEstoque").style.display = "block";
+}
+function fecharModal() {
+  document.getElementById("modalEstoque").style.display = "none";
+}
+</script>
+
+</body>
+</html>
+
+

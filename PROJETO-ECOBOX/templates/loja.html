@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EcoBox — Loja</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg1: #ffffff;
+      --bg2: #ffffff;
+      --green-light: #78ff9b;
+      --green-mid: #3fbf66;
+      --green-dark: #1a512d;
+      --text: #e4ffe9;
+      --erro: #ff4f4f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(13, 43, 29, 0.9);
+  padding: 18px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 30px White;
+  backdrop-filter: blur(6px);
+}
+
+
+    nav {
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    nav a {
+      position: relative;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: color 0.3s ease, transform 0.3s ease;
+  padding-bottom: 6px;
+    }
+
+    nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+  box-shadow: 0 0 10px rgba(101, 255, 122, 0.7);
+  animation: glowline 1.6s ease-in-out infinite alternate;
+}
+
+    @keyframes glowline {
+  from {opacity: 0.7; box-shadow: 0 0 6px rgba(101, 255, 122, 0.4);}
+  to {opacity: 1; box-shadow: 0 0 14px rgba(101, 255, 122, 0.9);}
+}
+    nav a[href="/loja"]::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+  border-radius: 3px;
+}
+
+
+    nav i[data-lucide] {
+      width: 18px;
+      height: 18px;
+    }
+
+    main {
+      padding: 80px 8%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1.titulo {
+      font-size: 42px;
+      background: linear-gradient(90deg, var(--green-light), #d6ffb2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 60px;
+      text-shadow: 0 0 20px rgba(120,255,155,0.25);
+    }
+
+    .produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2.5rem;
+      width: 100%;
+      max-width: 1300px;
+    }
+
+    .produto {
+      background: rgba(40, 80, 60, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      transition: .35s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .produto:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .produto img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+
+    .produto-info {
+      padding: 20px 24px 28px;
+      text-align: left;
+    }
+
+    .produto-info h2 {
+      color: var(--green-light);
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .estoque {
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      color: #caffc6;
+    }
+
+    .preco {
+      font-size: 1.3rem;
+      color: #a4ffb5;
+      font-weight: 700;
+      margin-bottom: 14px;
+      text-shadow: 0 0 8px rgba(78, 54, 54, 0.25);
+    }
+
+    .btn-carrinho {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-carrinho:hover {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: #d3f5d8;
+      margin-top: 80px;
+    }
+
+    .drawer-overlay {
+      position: fixed;  
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+      z-index: 300;
+    }
+
+    .drawer-overlay.ativo {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .drawer {
+      width: 100%;
+      max-width: 600px;
+      height: 80vh;
+      background: #0d2416;
+      border-radius: 32px 32px 0 0;
+      padding: 32px;
+      box-shadow: 0 -10px 35px rgba(0,0,0,0.4);
+      transform: translateY(100%);
+      transition: transform .28s ease;
+      color: white;
+    }
+
+    .drawer.ativo {
+      transform: translateY(0);
+    }
+
+    #alertaEstoque {
+      margin-top: 8px;
+      color: var(--erro);
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: none;
+    }
+    /* =================== BARRA DE PESQUISA =================== */
+.barra-pesquisa {
+  width: 100%;
+background: linear-gradient(370deg, var(--bg1), var(--bg2));  
+display: flex;
+  justify-content: center;
+  padding: 14px 8%;
+  gap: 8px;
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 70px; /* logo abaixo do header */
+  z-index: 49;
+}
+
+.barra-pesquisa input {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 50px;
+  border: 1px solid var(--green-mid);
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.barra-pesquisa input:focus {
+  border-color: var(--green-light);
+  box-shadow: 0 0 12px rgba(120,255,155,0.35);
+}
+
+.barra-pesquisa button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.barra-pesquisa button:hover {
+  background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+  transform: scale(1.05);
+}
+/* =====================
+      CARROSSEL
+===================== */
+
+.carrossel {
+  width: 100%;
+  max-width: 1200px;
+  
+  margin: 30px auto 60px;
+  overflow: hidden;
+  border-radius: 18px;
+  object-fit: cover;
+  background: rgba(10, 28, 19, 0.7);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  padding: 20px 0;
+}
+
+.carrossel-track {
+  display: flex;
+  width: 300%;
+  animation: deslizar 12s infinite ease-in-out;
+}
+
+.slide {
+  flex: 1;
+  text-align: center;
+  padding: 40px;
+  color: #dfffdf;
+}
+
+.slide h2 {
+  font-size: 2rem;
+  color: var(--green-light);
+  margin-bottom: 10px;
+}
+
+.slide p {
+  font-size: 1.2rem;
+}
+
+@keyframes deslizar {
+  0%, 20% { transform: translateX(0); }
+  33%, 53% { transform: translateX(-33.33%); }
+  66%, 86% { transform: translateX(-66.66%); }
+  100% { transform: translateX(0); }
+}
+
+.carrossel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #355f46;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.dot.ativo {
+  background: var(--green-light);
+  transform: scale(1.25);
+}
+
+.floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, rgb(8, 85, 62), #65ff7a);
+  color: #fff;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+
+  </style>
+</head>
+
+<body>
+  <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+  <nav>
+    <a href="/site"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  function confirmarSaida() {
+    if(confirm("Tem certeza que deseja sair da sua conta?")){
+      window.location.href = "/visitante";
+    }
+  }
+
+  // Fecha o dropdown ao clicar fora
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+  <div class="barra-pesquisa">
+    <input type="text" id="inputPesquisa" placeholder="🔍 Pesquise produtos..." />
+    <button onclick="pesquisarProdutos()">Pesquisar</button>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+      <div class="flash-msg {{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<style>
+  .flash-container {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    z-index: 999999;
+  }
+
+  .flash-msg {
+    padding: 14px 22px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: slideIn .4s ease-out, fadeOut 1s ease 4s forwards;
+  }
+
+  .flash-msg.sucesso,
+  .flash-msg.sucesso_cadastro {
+    background: #28a745;
+  }
+
+  .flash-msg.erro,
+  .flash-msg.erro_login,
+  .flash-msg.erro_cadastro {
+    background: #dc3545;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(30px); }
+  }
+
+</style>
+<div class="carrossel">
+  <div class="carrossel-track">
+    
+    {% for slide in slides %}
+    <div class="slide">
+      <div class="slide-text">{{ slide.frase }}</div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  <div class="carrossel-dots">
+    {% for slide in slides %}
+      <span class="dot {% if loop.first %}ativo{% endif %}"></span>
+    {% endfor %}
+  </div>
+</div>
+
+<style>.slide-text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 32px;
+  font-weight: 700;
+  color: #54ec6d;
+  animation: rolando 10s linear infinite, pulse 2s ease-in-out infinite;
+  text-align: center;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}</style>
+
+  <main>
+  <h1 class="titulo">🌿 Produtos EcoBox</h1>
+
+  <section class="produtos">
+  {% for produto in produtos %}
+  <div class="produto">
+    <!-- Imagem do produto, com fallback para default caso não exista -->
+     
+    <img src="{{ url_for('static', filename='produtos/' + (produto.imagem or 'default.png')) }}" alt="{{ produtos.nome }}">
+
+    <!-- Nome do produto -->
+    <h2>{{ produto.nome }}</h2>
+
+    <!-- Estoque -->
+    <p class="estoque" id="estoque_{{ produto.id }}">
+      {% if produto.estoque > 0 %}
+        {{ produto.estoque }} em estoque
+      {% else %}
+        Esgotado
+      {% endif %}
+    </p>
+
+    <!-- Preço formatado -->
+    <div class="preco">R$ {{ "%.2f"|format(produto.preco) }}</div>
+
+    <!-- Botão para ver produto ou adicionar ao carrinho -->
+    <button class="btn-carrinho"
+            data-id="{{ produto.id }}"
+            data-nome="{{ produto.nome }}"
+            data-preco="{{ produto.preco }}"
+            data-imagem="{{ produto.imagem }}"
+            data-descricao="{{ produto.descricao }}">
+      Ver Produto
+    </button>
+  </div>
+  {% endfor %}
+</section>
+
+</main>
+
+  <footer style="text-align:center; margin:30px 0; color:#666;">© 2025 Ecobox — Da Cidade para o Mundo.</footer>
+
+<script>
+  lucide.createIcons();
+
+  function confirmarSaida() {
+    if (confirm("Tem certeza que deseja sair?")) {
+      window.location.href = "/visitante";
+    }
+  }
+
+  // =================== ESTOQUE EM TEMPO REAL ===================
+
+  const estoques = {}; // cache opcional
+
+  async function carregarEstoque(id) {
+    const resp = await fetch(`/api/estoque/${id}`);
+    const json = await resp.json();
+
+    if (json.estoque !== undefined) {
+      estoques[id] = json.estoque;
+      document.getElementById(`estoque_${id}`).innerText =
+        `Disponível: ${json.estoque}`;
+    }
+  }
+
+  // carrega estoque de todos
+  window.onload = () => {
+    const botoes = document.querySelectorAll(".btn-carrinho");
+    botoes.forEach(btn => carregarEstoque(btn.dataset.id));
+  };
+// ================= CARROSSEL =================
+let dotIndex = 0;
+setInterval(() => {
+  const dots = document.querySelectorAll(".dot");
+  dots.forEach(d => d.classList.remove("ativo"));
+  dotIndex = (dotIndex + 1) % dots.length;
+  dots[dotIndex].classList.add("ativo");
+}, 4000);
+
+</script>
+<style>
+body { font-family: 'Poppins', sans-serif; margin:0; background:#f4f6f9; }
+.titulo { text-align:center; margin:30px 0; color:#16613b; }
+
+/* Produtos */
+/* ================= PRODUTOS ================= */
+.produtos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 25px;
+}
+
+/* ================= CARD DO PRODUTO ================= */
+.produto {
+  background: #ffffff;
+  border-radius: 25px;
+  width: 230px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 12px 35px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.produto::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(26,143,73,0.05), rgba(26,143,73,0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.produto:hover::before {
+  opacity: 1;
+}
+
+.produto:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.18), 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.produto img {
+  max-width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  transition: transform 0.4s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.produto:hover img {
+  transform: scale(1.08);
+}
+
+.produto h2 {
+  font-size: 1.2rem;
+  color: #16613b;
+  text-align: center;
+  font-weight: 700;
+  margin: 8px 0 10px;
+  line-height: 1.3;
+  z-index: 1;
+  position: relative;
+}
+
+.preco {
+  font-weight: 700;
+  color: #28a45c;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  z-index: 1;
+  position: relative;
+}
+
+.estoque {
+  font-size: 0.9rem;
+  color: #4a7f5a;
+  margin-bottom: 12px;
+  font-weight: 500;
+  z-index: 1;
+  position: relative;
+}
+
+/* ================= BOTÃO ================= */
+.btn-carrinho {
+  padding: 12px 16px;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(120deg, #1a8f49, #28a45c);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.btn-carrinho:hover {
+  background: linear-gradient(120deg, #166c38, #1a8f49);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* ================= RESPONSIVO ================= */
+@media(max-width: 768px){
+  .produto { width: 45%; }
+}
+
+@media(max-width: 500px){
+  .produto { width: 90%; padding: 15px; }
+  .produto img { height: 140px; }
+  .btn-carrinho { font-size: 0.95rem; padding: 10px; }
+}
+
+/* Modal Overlay */
+/* =================== MODAL PRODUTO =================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease;
+}
+.modal-overlay.ativo { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+.modal-full {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  height: 85%;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  animation: modalScale 0.3s ease;
+}
+@keyframes modalScale {
+  from { transform: scale(0.8); opacity:0; } 
+  to { transform: scale(1); opacity:1; }
+}
+
+.modal-left { 
+  flex: 1; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  background: #f7f7f7; 
+}
+.modal-left img { 
+  max-width: 100%; 
+  max-height: 100%; 
+  object-fit: contain; 
+}
+
+.modal-right {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+}
+
+.modal-right h2 { 
+  font-size: 2rem; 
+  color: #16613b; 
+  margin: 0; 
+}
+.modal-preco, 
+.modal-estoque, 
+.modal-total { 
+  font-size: 1.2rem; 
+  font-weight: bold; 
+  color: #215535;
+}
+.modal-desc { 
+  font-size: 1rem; 
+  line-height: 1.5; 
+  color: #333; 
+  margin-top: 10px; 
+}
+
+.modal-qtd-area { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+.modal-qtd-area input {
+  width: 60px; 
+  text-align: center; 
+  font-size: 1.2rem;
+  border-radius: 8px; 
+  border: 1px solid #28a45c; 
+  padding: 5px;
+}
+.modal-qtd-area button {
+  padding: 8px 15px; 
+  font-size: 18px; 
+  border-radius: 8px;
+  border: none; 
+  cursor: pointer; 
+  background: #e8f5e9;
+}
+
+.modal-add {
+  padding: 15px; 
+  background: #1a8f49; 
+  color: white;
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+.modal-add:hover { 
+  background: #166c38; 
+}
+
+.modal-close {
+  position: absolute; 
+  top: 20px; 
+  right: 20px;
+  font-size: 28px; 
+  border: none; 
+  background: none; 
+  cursor: pointer; 
+  color: #333;
+}
+
+/* =================== RESPONSIVO =================== */
+@media(max-width: 900px){
+  .modal-full { 
+    flex-direction: column; 
+    height: 90%; 
+    width: 95%; 
+  }
+  .modal-left, .modal-right { 
+    flex: unset; 
+    width: 100%; 
+  }
+  .modal-left { height: 50%; }
+  .modal-right { height: 50%; padding: 15px; }
+}
+
+</style>
+<!-- MODAL PRODUTO -->
+<div id="modalProduto" class="modal-overlay">
+  <div class="modal-full">
+    <button class="modal-close" onclick="fecharModal()">×</button>
+    <div class="modal-left">
+      <img id="modalImagem" src="" alt="Produto">
+    </div>
+    <div class="modal-right">
+      <h2 id="modalNome">Produto</h2>
+      <p class="modal-preco">Valor unitário: R$ <span id="modalPreco">0.00</span></p>
+      <p class="modal-estoque">Estoque disponível: <span id="modalEstoque">0</span></p>
+      <div class="modal-qtd-area">
+        <button type="button" onclick="mudarQtd(-1)">−</button>
+        <input type="number" id="modalQtd" value="1" min="1">
+        <button type="button" onclick="mudarQtd(1)">+</button>
+      </div>
+      <p class="modal-total">Total: R$ <span id="modalTotal">0.00</span></p>
+      <p class="modal-desc" id="modalDescricao">Descrição do produto...</p>
+      <form id="modalFormCarrinho" action="/add_carrinho" method="POST">
+        <input type="hidden" id="modalProdutoId" name="produto_id">
+        <input type="hidden" id="modalQuantidadeHidden" name="quantidade">
+        <input type="hidden" id="modalPrecoHidden" name="preco">
+        <button type="button" class="modal-add" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+window.estoques = {};
+
+// Carregar estoque de todos produtos
+window.addEventListener('load', () => {
+  const botoes = document.querySelectorAll(".btn-carrinho");
+  botoes.forEach(btn => {
+    const id = btn.dataset.id;
+    fetch(`/api/estoque/${id}`).then(r => r.json()).then(json => {
+      if(json.estoque !== undefined){
+        estoques[id] = Number(json.estoque);
+        document.getElementById(`estoque_${id}`).innerText = `Disponível: ${estoques[id]}`;
+      }
+    });
+    // Abrir modal ao clicar
+    btn.onclick = function(e){ e.preventDefault(); abrirModal(this); };
+  });
+});
+
+function abrirModal(btn){
+  const id = btn.dataset.id;
+  const nome = btn.dataset.nome;
+  const preco = Number(btn.dataset.preco);
+  const imagem = btn.dataset.imagem;
+  const descricao = btn.dataset.descricao;
+  const estoque = Number(estoques[id] ?? 0);
+
+  document.getElementById("modalNome").innerText = nome;
+  document.getElementById("modalPreco").innerText = preco.toFixed(2);
+  document.getElementById("modalProdutoId").value = id;
+  document.getElementById("modalPrecoHidden").value = preco;
+  document.getElementById("modalImagem").src = `/static/produtos/${imagem}`;
+  document.getElementById("modalDescricao").innerText = descricao;
+  document.getElementById("modalEstoque").innerText = estoque;
+  document.getElementById("modalQtd").value = 1;
+  document.getElementById("modalTotal").innerText = preco.toFixed(2);
+
+  document.getElementById("modalProduto").classList.add("ativo");
+}
+
+function fecharModal(){ document.getElementById("modalProduto").classList.remove("ativo"); }
+
+function mudarQtd(delta){
+  const campo = document.getElementById("modalQtd");
+  const preco = Number(document.getElementById("modalPreco").innerText);
+  const id = document.getElementById("modalProdutoId").value;
+  const estoque = Number(estoques[id] ?? 0);
+  let val = Number(campo.value) + delta;
+  if(val < 1) val = 1;
+  if(val > estoque) val = estoque;
+  campo.value = val;
+  document.getElementById("modalTotal").innerText = (val*preco).toFixed(2);
+}
+
+document.getElementById('modalQtd').addEventListener('input',(e)=>{
+  const preco = Number(document.getElementById("modalPreco").innerText);
+  const id = document.getElementById("modalProdutoId").value;
+  const estoque = Number(estoques[id] ?? 0);
+  let val = Number(e.target.value);
+  if(val < 1) val = 1;
+  if(val > estoque) val = estoque;
+  e.target.value = val;
+  document.getElementById("modalTotal").innerText = (val*preco).toFixed(2);
+});
+
+function adicionarAoCarrinho(){
+  document.getElementById("modalQuantidadeHidden").value = Number(document.getElementById("modalQtd").value);
+  document.getElementById("modalFormCarrinho").submit();
+}
+
+// Fecha clicando fora do box
+document.addEventListener('click',(e)=>{
+  const overlay = document.getElementById('modalProduto');
+  if(overlay && overlay.classList.contains('ativo') && e.target === overlay) fecharModal();
+});
+</script>
+<script>
+  /* === Pesquisa client-side: esconde/mostra cards já renderizados === */
+  (function(){
+    const input = document.getElementById('inputPesquisa');
+    const botao = document.querySelector('.barra-pesquisa button');
+  
+    if (!input || !botao) return;
+  
+    // função que faz a busca
+    function pesquisarProdutosLocal() {
+      const q = (input.value || '').trim().toLowerCase();
+      const cards = document.querySelectorAll('.produtos .produto');
+  
+      if (!q) {
+        // sem termo: mostra todos
+        cards.forEach(c => c.style.display = '');
+        return;
+      }
+  
+      cards.forEach(card => {
+        // procuramos nos atributos data-* do botão "Ver Produto" ou no texto do card
+        const btn = card.querySelector('.btn-carrinho');
+        const nome = (btn && btn.dataset.nome || card.querySelector('h2')?.innerText || '').toLowerCase();
+        const descricao = (btn && btn.dataset.descricao || '').toLowerCase();
+        const combined = (nome + ' ' + descricao);
+  
+        if (combined.indexOf(q) !== -1) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  
+    // debounce simples para não disparar a cada tecla muito rápido
+    function debounce(fn, wait=220){
+      let t;
+      return function(...args){
+        clearTimeout(t);
+        t = setTimeout(()=> fn.apply(this, args), wait);
+      };
+    }
+  
+    const debouncedSearch = debounce(pesquisarProdutosLocal, 160);
+  
+    // eventos
+    input.addEventListener('input', debouncedSearch);
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        pesquisarProdutosLocal();
+      }
+    });
+    botao.addEventListener('click', (e)=>{ e.preventDefault(); pesquisarProdutosLocal(); });
+  })();
+  </script>
+</body>
+</html>

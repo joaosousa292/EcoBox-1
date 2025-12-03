@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Checkout — EcoBox</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background: #f5f7f6; font-family: "Poppins", sans-serif; }
+    .page-title { font-size: 2rem; font-weight: 700; color: #0a3627; margin-bottom: 30px; }
+    .card-checkout { background: #ffffffcc; backdrop-filter: blur(8px); border-radius: 18px; padding: 25px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }
+    .resume-card { background: white; border-radius: 18px; padding: 25px; box-shadow: 0 5px 25px rgba(0,0,0,0.07); position: sticky; top: 20px; }
+    .section-title { font-size: 1.2rem; font-weight: 600; color: #0a3627; margin-bottom: 10px; }
+    .btn-apple { background: black; color: white; border-radius: 14px; font-size: 1.1rem; font-weight: 600; padding: 14px 0; width: 100%; transition: 0.2s; }
+    .line { height: 1px; background: #ececec; margin: 15px 0; }
+    .small-muted { color:#666; font-size:0.9rem; }
+    .card-input { border-radius:8px; padding:10px; border:1px solid #ddd; }
+    .hidden { display:none; }
+    .saved-card-compact { display:flex; align-items:center; gap:12px; padding:8px 10px; border-radius:10px; border:1px solid #efefef; margin-bottom:8px; }
+    .saved-card-compact .meta { font-size:0.95rem; color:#333; }
+    .saved-card-compact .muted { color:#777; font-size:0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <h2 class="page-title">Finalizar Compra</h2>
+    <div class="row g-4">
+      <!-- FORMULÁRIO -->
+      <div class="col-lg-7">
+        <div class="card-checkout">
+          <h5 class="section-title">Dados para entrega</h5>
+
+          <!-- NOTE: action chama sua rota /finalizar_compra -->
+          <form method="POST" id="checkoutForm" action="{{ url_for('finalizar_compra') }}">
+            <div class="mb-3">
+              <label class="form-label">Nome completo</label>
+              <input type="text" name="nome" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Telefone</label>
+              <input type="text" name="telefone" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Endereço</label>
+              <input type="text" name="endereco" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">CEP</label>
+              <input type="text" name="cep" class="form-control" required>
+            </div>
+
+            <div class="line"></div>
+
+            <h5 class="section-title">Pagamento</h5>
+
+            <div class="mb-3">
+              <label class="form-label">Forma de pagamento</label>
+              <select name="pagamento" id="pagamentoSelect" class="form-select" required>
+                <option value="pix">PIX</option>
+                <option value="cartao">Cartão</option>
+                <option value="boleto">Boleto</option>
+              </select>
+            </div>
+
+            <!-- BLOCO DE CARTÕES SALVOS (se houver) -->
+            {% if metodos_salvos %}
+            <div class="mb-3" id="savedCardsBlock">
+              <label class="form-label">Cartões salvos</label>
+              <div>
+                {% for m in metodos_salvos %}
+                <div class="form-check saved-card-compact">
+                  <input class="form-check-input saved-card-radio" type="radio"
+                         name="saved_card_choice" id="saved_card_{{m.id}}"
+                         value="{{ m.id }}"
+                         data-token="{{ m.token }}"
+                         data-ultimos4="{{ m.ultimos4 }}"
+                         data-bandeira="{{ m.bandeira }}"
+                         data-nome="{{ m.nome_titular }}"
+                         data-expiracao="{{ m.expiracao }}"
+                         data-ehpadrao="{{ 1 if m.eh_padrao else 0 }}"
+                         {% if m.eh_padrao %} checked {% endif %}>
+                  <label class="form-check-label" for="saved_card_{{m.id}}">
+                    <div>
+                      <div class="meta">•••• {{ m.ultimos4 }} — {{ m.nome_titular or 'Titular' }} <small class="muted">({{ m.bandeira or 'cartão' }})</small></div>
+                      {% if m.eh_padrao %}<div class="muted">Padrão</div>{% endif %}
+                    </div>
+                  </label>
+                </div>
+                {% endfor %}
+                <div class="form-check mt-2 saved-card-compact">
+                  <input class="form-check-input" type="radio" name="saved_card_choice" id="saved_card_new" value="__new__" {% if not metodos_salvos|selectattr('eh_padrao')|list %} checked {% endif %}>
+                  <label class="form-check-label" for="saved_card_new">
+                    <div class="meta">Usar outro cartão</div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- BLOCO CARTÃO (aparece só quando escolher 'cartao' ou 'usar novo cartão') -->
+            <div id="cartaoBloco" class="hidden">
+              <div class="mb-3">
+                <label class="form-label">Número do cartão</label>
+                <input id="cardNumber" name="card_number" type="text" class="form-control card-input" placeholder="0000 0000 0000 0000">
+              </div>
+
+              <div class="mb-3 row">
+                <div class="col-6">
+                  <label class="form-label">Nome no cartão</label>
+                  <input id="cardName" name="nome_cartao" type="text" class="form-control card-input">
+                </div>
+                <div class="col-3">
+                  <label class="form-label">Validade (MM/AA)</label>
+                  <input id="cardExp" name="expiracao" type="text" class="form-control card-input" placeholder="MM/YY">
+                </div>
+                <div class="col-3">
+                  <label class="form-label">CVC</label>
+                  <input id="cardCvc" name="card_cvc" type="text" class="form-control card-input" placeholder="CVC">
+                </div>
+              </div>
+
+              <div class="mb-3 form-check">
+                <input id="saveCard" name="save_card" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="saveCard">Salvar este cartão para compras futuras</label>
+              </div>
+
+              <div class="mb-3 form-check">
+                <input id="saveCardPadrao" name="save_card_padrao" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="saveCardPadrao">Definir como método padrão</label>
+              </div>
+            </div>
+
+            <!-- campos ocultos que serão preenchidos pelo JS/tokenização do PSP -->
+            <input type="hidden" name="psp_token" id="psp_token" value="">
+            <input type="hidden" name="ultimos4" id="ultimos4" value="">
+            <input type="hidden" name="bandeira" id="bandeira" value="">
+            <input type="hidden" name="saved_method_id" id="saved_method_id" value="">
+
+            <button type="submit" class="btn-apple mt-4">
+              Finalizar Pedido
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- RESUMO DO PEDIDO -->
+      <div class="col-lg-5">
+        <div class="resume-card">
+          <h5 class="section-title">Resumo do Pedido</h5>
+          <ul class="list-group mb-3">
+            {% for item in itens %}
+            <li class="list-group-item d-flex justify-content-between">
+              <div>
+                <strong>{{ item.nome }}</strong><br>
+                <small class="text-muted">{{ item.quantidade }} × R$ {{ "%.2f"|format(item.preco) }}</small>
+              </div>
+              <span class="fw-semibold">R$ {{ "%.2f"|format(item.quantidade * item.preco) }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+
+          <div class="d-flex justify-content-between">
+            <strong>Total</strong>
+            <strong class="text-success">R$ {{ "%.2f"|format(total) }}</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // lógica UI e tokenização simulada + controle de visibilidade dos cartões salvos
+    const pagamentoSelect = document.getElementById('pagamentoSelect');
+    const cartaoBloco = document.getElementById('cartaoBloco');
+    const savedCardsBlock = document.getElementById('savedCardsBlock'); // pode ser null
+    const form = document.getElementById('checkoutForm');
+  
+    // campos hidden
+    const savedMethodIdInput = document.getElementById('saved_method_id');
+    const pspTokenInput = document.getElementById('psp_token');
+    const ultimos4Input = document.getElementById('ultimos4');
+    const bandeiraInput = document.getElementById('bandeira');
+  
+    function showOrHideCardBlock() {
+      const isCartao = pagamentoSelect && pagamentoSelect.value === 'cartao';
+  
+      // cartão novo / inputs
+      if (cartaoBloco) {
+        cartaoBloco.classList.toggle('hidden', !isCartao);
+      }
+  
+      // blocos de cartões salvos (se existir no DOM)
+      if (savedCardsBlock) {
+        savedCardsBlock.style.display = isCartao ? '' : 'none';
+      }
+  
+      if (isCartao) {
+        // se houver radios e um estiver marcado e não for "__new__", ocultar campos de novo cartão
+        const chosen = document.querySelector('input[name="saved_card_choice"]:checked');
+        if (chosen && chosen.value !== '__new__' && chosen.value !== null) {
+          hideCardInputsForSavedChoice();
+        } else {
+          showCardInputsForNewChoice();
+        }
+      } else {
+        // quando não for cartão, limpar seleção de cartão salvo e hidden inputs
+        if (savedMethodIdInput) savedMethodIdInput.value = '';
+        if (pspTokenInput) pspTokenInput.value = '';
+        if (ultimos4Input) ultimos4Input.value = '';
+        if (bandeiraInput) bandeiraInput.value = '';
+        // e garantir que os inputs de novo cartão fiquem visíveis caso o usuário volte a escolher "cartao"
+        showCardInputsForNewChoice();
+      }
+    }
+  
+    function hideCardInputsForSavedChoice() {
+      const cardNumberGroup = document.getElementById('cardNumber') && document.getElementById('cardNumber').closest('.mb-3');
+      if (cardNumberGroup) cardNumberGroup.style.display = 'none';
+      const cardNameGroup = document.getElementById('cardName') && document.getElementById('cardName').closest('.col-6');
+      if (cardNameGroup) cardNameGroup.style.display = 'none';
+      const cardExpGroup = document.getElementById('cardExp') && document.getElementById('cardExp').closest('.col-3');
+      if (cardExpGroup) cardExpGroup.style.display = 'none';
+      const cardCvcGroup = document.getElementById('cardCvc') && document.getElementById('cardCvc').closest('.col-3');
+      if (cardCvcGroup) cardCvcGroup.style.display = 'none';
+      try { document.getElementById('saveCard').checked = false; } catch(e){}
+    }
+  
+    function showCardInputsForNewChoice() {
+      const cardNumberGroup = document.getElementById('cardNumber') && document.getElementById('cardNumber').closest('.mb-3');
+      if (cardNumberGroup) cardNumberGroup.style.display = '';
+      const cardNameGroup = document.getElementById('cardName') && document.getElementById('cardName').closest('.col-6');
+      if (cardNameGroup) cardNameGroup.style.display = '';
+      const cardExpGroup = document.getElementById('cardExp') && document.getElementById('cardExp').closest('.col-3');
+      if (cardExpGroup) cardExpGroup.style.display = '';
+      const cardCvcGroup = document.getElementById('cardCvc') && document.getElementById('cardCvc').closest('.col-3');
+      if (cardCvcGroup) cardCvcGroup.style.display = '';
+    }
+  
+    // Event listeners
+    if (pagamentoSelect) pagamentoSelect.addEventListener('change', showOrHideCardBlock);
+  
+    // Handler para seleção de cartão salvo (se houver radios)
+    document.querySelectorAll('.saved-card-radio').forEach(radio => {
+      radio.addEventListener('change', (ev) => {
+        const r = ev.currentTarget;
+        if (r && r.checked) {
+          // preencher hidden inputs com dados do cartão salvo
+          if (savedMethodIdInput) savedMethodIdInput.value = r.value || '';
+          if (pspTokenInput) pspTokenInput.value = r.dataset.token || '';
+          if (ultimos4Input) ultimos4Input.value = r.dataset.ultimos4 || '';
+          if (bandeiraInput) bandeiraInput.value = r.dataset.bandeira || '';
+          hideCardInputsForSavedChoice();
+        }
+      });
+    });
+  
+    // radio "usar novo cartão" -> limpa hidden saved_method e mostra inputs
+    const radioNew = document.getElementById('saved_card_new');
+    if (radioNew) {
+      radioNew.addEventListener('change', (ev) => {
+        if (ev.currentTarget.checked) {
+          if (savedMethodIdInput) savedMethodIdInput.value = '';
+          if (pspTokenInput) pspTokenInput.value = '';
+          if (ultimos4Input) ultimos4Input.value = '';
+          if (bandeiraInput) bandeiraInput.value = '';
+          showCardInputsForNewChoice();
+        }
+      });
+    }
+  
+    // Se houver radios e um já estiver marcado no carregamento, dispare o comportamento
+    const initialChosen = document.querySelector('input[name="saved_card_choice"]:checked');
+    if (initialChosen) {
+      if (initialChosen.value !== '__new__') {
+        if (savedMethodIdInput) savedMethodIdInput.value = initialChosen.value || '';
+        if (pspTokenInput) pspTokenInput.value = initialChosen.dataset.token || '';
+        if (ultimos4Input) ultimos4Input.value = initialChosen.dataset.ultimos4 || '';
+        if (bandeiraInput) bandeiraInput.value = initialChosen.dataset.bandeira || '';
+        hideCardInputsForSavedChoice();
+      } else {
+        showCardInputsForNewChoice();
+      }
+    }
+  
+    // inicializa visibilidade (executa assim que o script é carregado)
+    showOrHideCardBlock();
+  
+    // Simulação simples de tokenização (SUBSTITUA pelo SDK do PSP em produção)
+    form.addEventListener('submit', (ev) => {
+      if (!pagamentoSelect) return;
+      if (pagamentoSelect.value !== 'cartao') return; // nada a tokenizar
+  
+      // Se já escolheu um método salvo, nada para tokenizar no front — continue
+      if (savedMethodIdInput && savedMethodIdInput.value) {
+        return;
+      }
+  
+      // se foi escolhido cartão novo, criamos um "psp_token" simulado com os 4 últimos
+      const num = (document.getElementById('cardNumber') || {}).value || '';
+      const digits = num.replace(/\D/g,'');
+      const ult4 = digits.slice(-4);
+      const token = ult4 ? ('tok_demo_' + ult4) : ('tok_demo_0000');
+  
+      // preenche os hidden inputs (quem o servidor espera)
+      if (pspTokenInput) pspTokenInput.value = token;
+      if (ultimos4Input) ultimos4Input.value = ult4;
+      // heurística simples para bandeira (substitua por validação real)
+      const brand = digits.startsWith('4') ? 'visa' : (digits.startsWith('5') ? 'mastercard' : 'other');
+      if (bandeiraInput) bandeiraInput.value = brand;
+      // deixa continuar o submit — no mundo real, aguardaria retorno do PSP SDK (async)
+    });
+  </script>
+  
+</body>
+</html>

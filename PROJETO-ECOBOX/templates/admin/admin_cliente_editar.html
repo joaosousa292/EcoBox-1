@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Editar Cliente — EcoBox Admin (Premium)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --bg: #f3f7f4;
+      --card: rgba(255,255,255,0.85);
+      --muted: #6c7a74;
+      --accent: #2fb86a;
+      --text: #0d2b1d;
+      --glass: rgba(255,255,255,0.55);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:"Poppins",system-ui,-apple-system,'Segoe UI',Roboto,Arial;
+      background:linear-gradient(180deg,var(--bg), #eaf3ea);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* fixed sidebar (kept identical to your standard) */
+    .sidebar{
+      width:220px; background:#0d2b1d; min-height:100vh; padding:22px; color:#fff;
+      position:fixed; left:0; top:0; box-shadow: 6px 0 24px rgba(6,20,12,0.18);
+    }
+    .sidebar h3{margin:0 0 12px 0; font-size:16px; font-weight:800; letter-spacing:1px}
+    .sidebar a{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;color:#e8f2ec;text-decoration:none;font-weight:600; margin-bottom:6px}
+    .sidebar a.active{background:#16402e;border-left:4px solid var(--accent);padding-left:14px}
+    .sidebar a:hover{transform:translateX(4px); background: rgba(255,255,255,0.04)}
+
+    main.content{margin-left:220px;padding:36px 48px;max-width:1400px}
+
+    /* Page header */
+    .page-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+    .back-link{color:var(--muted);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+    .title{font-size:24px;font-weight:800;margin:0}
+    .subtitle{color:var(--muted);font-size:13px}
+
+    /* glass card */
+    .glass{
+      background:var(--card);
+      backdrop-filter: blur(6px) saturate(120%);
+      border-radius:16px;
+      padding:22px;
+      box-shadow: 0 10px 30px rgba(6,24,12,0.08);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+  
+
+    .glass:hover{ transform: translateY(-4px); box-shadow: 0 18px 40px rgba(6,24,12,0.12); }
+
+    /* top area */
+    .top-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .photo-wrap{width:136px;height:136px;border-radius:14px;overflow:hidden;flex:0 0 136px;position:relative;box-shadow:0 12px 30px rgba(4,20,12,0.12)}
+    .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo-badge{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,0.45);color:#fff;padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px}
+
+    .meta{flex:1;min-width:240px}
+    .meta h2{margin:0;font-size:22px;font-weight:800}
+    .meta .muted{color:var(--muted);margin-top:6px}
+    .meta .small{color:var(--muted);font-size:13px;margin-top:8px}
+
+    /* stat pills */
+    .stat-grid{display:flex;gap:12px;margin-left:auto;flex-wrap:wrap}
+    .stat{background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));border-radius:12px;padding:10px 14px;min-width:120px;text-align:center;border:1px solid rgba(6,20,12,0.04)}
+    .stat .label{font-size:12px;color:var(--muted)}
+    .stat .value{font-weight:800;margin-top:6px}
+
+    /* form */
+    .form-grid{display:grid;grid-template-columns: 1fr 360px; gap:20px; margin-top:18px}
+    @media(max-width:1000px){ .form-grid{grid-template-columns:1fr} .stat-grid{width:100%;margin-left:0} }
+
+    /* form card */
+    .form-card{padding:18px;border-radius:12px}
+    .form-title{font-weight:800;margin-bottom:10px}
+
+    /* input with icon */
+    .input-icon{position:relative}
+    .input-icon svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.65}
+    .input-icon input, .input-icon select, .input-icon textarea{padding-left:44px}
+
+    /* nice file input */
+    .file-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .file-btn{background:#fff;border:1px dashed #dfeee5;padding:10px 14px;border-radius:10px;cursor:pointer}
+    .file-name{color:var(--muted);font-size:13px}
+
+    /* buttons */
+    .actions{display:flex;gap:10px;justify-content:flex-end}
+    .btn-ghost{background:transparent;border:1px solid rgba(6,20,12,0.06);padding:10px 14px;border-radius:10px}
+    .btn-primary{background:linear-gradient(180deg,var(--accent), #1ca35a);border:none;color:#042616;padding:10px 14px;border-radius:10px;font-weight:700}
+    .btn-primary:hover{filter:brightness(.98);transform:translateY(-1px)}
+
+    /* logs area */
+    .logs .log{background:rgba(255,255,255,0.9);padding:12px;border-radius:10px;margin-bottom:10px;border:1px solid rgba(230,240,230,0.8)}
+    .logs time{font-size:13px;color:var(--muted)}
+
+    /* small helpers */
+    label.form-label{font-weight:700}
+    .kv{color:var(--muted);font-size:13px}
+
+    /* subtle entry animation */
+    .glass, .form-card{opacity:0; transform: translateY(8px); animation: fadeInUp .36s forwards}
+    .glass:nth-of-type(1){animation-delay:.04s}
+    .glass:nth-of-type(2){animation-delay:.08s}
+    @keyframes fadeInUp{to{opacity:1;transform:none}}
+
+  </style>
+</head>
+<body>
+
+{# Defaults to avoid UndefinedError when route doesn't pass these variables #}
+{% if stats is not defined %}
+  {% set stats = {} %}
+{% endif %}
+{% if ultimo_pedido is not defined %}
+  {% set ultimo_pedido = None %}
+{% endif %}
+{% if logs is not defined %}
+  {% set logs = [] %}
+{% endif %}
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>EcoBox Admin</h3>
+    <hr style="border-color:rgba(255,255,255,0.06)">
+    <a href="/admin/estatisticas"><i data-lucide="bar-chart-3"></i>Estatísticas</a>
+    <a href="/admin/produtos"><i data-lucide="package"></i>Produtos</a>
+    <a href="/admin/pedidos"><i data-lucide="receipt"></i>Pedidos</a>
+    <a href="/admin/clientes" class="active"><i data-lucide="users"></i>Clientes</a>
+    <hr style="border-color:rgba(255,255,255,0.06);margin-top:auto">
+    <a href="/admin/logout"><i data-lucide="log-out"></i>Sair</a>
+  </div>
+
+  <main class="content">
+    <div class="page-header">
+      <a class="back-link" href="/admin/clientes"><i data-lucide="arrow-left"></i><span>Voltar à lista</span></a>
+      <div style="flex:1;min-width:180px">
+        <div class="title">{{ cliente.nome }}</div>
+        <div class="subtitle">{{ cliente.email or '-' }}</div>
+      </div>
+    </div>
+
+    <!-- top glass -->
+    <section class="glass top-row">
+      <div class="photo-wrap">
+        <img id="photoPreviewTop" src="{{ cliente.foto_usuario or '/static/img/padrao_foto.png' }}" alt="foto cliente">
+        <div class="photo-badge">ID #{{ cliente.id }}</div>
+      </div>
+
+      <div class="meta">
+        <h2>{{ cliente.nome }}</h2>
+        <div class="muted">{{ cliente.email }}</div>
+        <div class="small mt-2">Cadastrado: {{ cliente.data_cadastro.strftime('%d/%m/%Y') if cliente.data_cadastro else '-' }}</div>
+        <div class="mt-2">
+          <span class="kv">Status: <strong>{{ cliente.status or 'ativo' }}</strong></span>
+          <span class="kv ms-3">País: {{ cliente.pais_regiao or '-' }}</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- form grid -->
+    <div class="form-grid" style="margin-top:18px">
+      <!-- left: form -->
+      <div class="glass form-card">
+        <div class="form-title">Editar dados do cliente</div>
+        <form method="post" action="/admin/clientes/{{ cliente.id }}/editar" enctype="multipart/form-data" id="clienteForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nome</label>
+              <div class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="pointer-events:none"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+                <input class="form-control form-control-lg" name="nome" value="{{ cliente.nome }}" required>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">E-mail</label>
+              <div class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="pointer-events:none"><path d="M2 6v12h20v-12h-20zm10 7l-10-7h20l-10 7z"/></svg>
+                <input class="form-control form-control-lg" type="email" name="email" value="{{ cliente.email }}" required>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Status</label>
+              <select name="status" class="form-select">
+                <option value="ativo" {% if cliente.status=='ativo' %}selected{% endif %}>Ativo</option>
+                <option value="inativo" {% if cliente.status=='inativo' %}selected{% endif %}>Inativo</option>
+                <option value="bloqueado" {% if cliente.status=='bloqueado' %}selected{% endif %}>Bloqueado</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">País / Região</label>
+              <input class="form-control" name="pais_regiao" value="{{ cliente.pais_regiao or 'br' }}">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Horas online</label>
+              <input class="form-control" name="horas_online" type="number" min="0" value="{{ cliente.horas_online or 0 }}">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Receber promoções</label>
+              <select name="receber_promocoes" class="form-select">
+                <option value="1" {% if cliente.receber_promocoes %}selected{% endif %}>Sim</option>
+                <option value="0" {% if not cliente.receber_promocoes %}selected{% endif %}>Não</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Notificações de pedido</label>
+              <select name="notificacoes_pedido" class="form-select">
+                <option value="1" {% if cliente.notificacoes_pedido %}selected{% endif %}>Sim</option>
+                <option value="0" {% if not cliente.notificacoes_pedido %}selected{% endif %}>Não</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Alertas de segurança</label>
+              <select name="alertas_seguranca" class="form-select">
+                <option value="1" {% if cliente.alertas_seguranca %}selected{% endif %}>Sim</option>
+                <option value="0" {% if not cliente.alertas_seguranca %}selected{% endif %}>Não</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Foto (substituir)</label>
+              <div class="file-row">
+                <label class="file-btn" for="fotoInput"><i data-lucide="image"></i> Selecionar imagem</label>
+                <div class="file-name" id="fileName">Nenhum arquivo escolhido</div>
+                <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none">
+              </div>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end gap-2">
+              <a href="/admin/clientes/{{ cliente.id }}" class="btn btn-ghost">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Salvar alterações</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- right: logs & quick actions -->
+      <aside>
+        <div class="glass" style="padding:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:800">Ações rápidas</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a class="btn btn-primary w-100" href="/admin/clientes/{{ cliente.id }}/historico">Ver histórico</a>
+            <a class="btn btn-ghost w-100" href="/admin/pedidos?cliente_id={{ cliente.id }}">Filtrar pedidos</a>
+            <form method="post" action="/admin/clientes/{{ cliente.id }}/deletar" onsubmit="return confirm('Excluir este cliente?');">
+              <button class="btn btn-outline-danger w-100" type="submit">Excluir cliente</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="glass logs" style="margin-top:12px;padding:12px">
+          <div style="font-weight:800;margin-bottom:8px">Atividades recentes</div>
+          {% if logs %}
+            {% for l in logs %}
+              <div class="log">
+                <time>{{ l.criado_em.strftime('%d/%m/%Y %H:%M') if l.criado_em else '-' }}</time>
+                <div style="font-weight:700;margin-top:6px">{{ l.acao }}</div>
+                {% if l.detalhes %}<div class="kv" style="margin-top:6px">{{ l.detalhes }}</div>{% endif %}
+                {% if l.meta %}<pre class="pre-meta">{{ l.meta }}</pre>{% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="kv">Nenhuma atividade registrada.</div>
+          {% endif %}
+        </div>
+      </aside>
+    </div>
+
+  </main>
+
+<script> lucide.createIcons(); </script>
+
+<script>
+
+  // file input preview + filename
+  const fotoInput = document.getElementById('fotoInput');
+  const fileNameEl = document.getElementById('fileName');
+  const photoPreviewTop = document.getElementById('photoPreviewTop');
+
+  const fileBtn = document.querySelector('.file-btn');
+  if (fileBtn && fotoInput) {
+    fileBtn.addEventListener('click', (e) => {
+      fotoInput.click();
+    });
+
+    fotoInput.addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if(!f) {
+        fileNameEl.textContent = 'Nenhum arquivo escolhido';
+        return;
+      }
+      fileNameEl.textContent = f.name;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        photoPreviewTop.src = ev.target.result;
+      }
+      reader.readAsDataURL(f);
+    });
+
+    // small accessibility: press Enter on file label
+    fileBtn.setAttribute('tabindex', 0);
+    fileBtn.addEventListener('keypress', (ev) => {
+      if(ev.key === 'Enter') fotoInput.click();
+    });
+  }
+</script>
+
+</body>
+</html>

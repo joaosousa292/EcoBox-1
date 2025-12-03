@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pedidos — Painel Administrativo EcoBox</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --sidebar-bg: #072617;
+      --accent: #32c77b;
+      --muted: #6b7a76;
+      --card-bg: #ffffff;
+      --surface: #f7faf7;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg, #f4f7f5 0%, #eef4ef 100%);
+      color:#0b2b20;
+      margin:0; padding:0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+            width: 260px;
+            background: #0d2b1d;
+            min-height: 100vh;
+            padding: 25px 18px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h3 {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255, 255, 255, 0.15);
+            margin: 20px 0;
+        }
+
+        .sidebar a {
+            color: #e1e1e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 17px;
+            padding: 12px 10px;
+            border-radius: 10px;
+            transition: 0.2s ease-in-out;
+            font-weight: 500;
+        }
+
+        .sidebar a svg {
+            margin-right: 12px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        /* Página atual */
+        .sidebar a.active {
+            background: #1a4e37;
+            color: #fff;
+            border-left: 4px solid #41c77a;
+            padding-left: 12px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand .logo{
+      width:44px; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent), #1ea56a);
+      display:flex; align-items:center; justify-content:center; font-weight:700; color:#042418; font-size:18px;
+    }
+
+    .nav-link-custom{color: #dbeee2; padding:10px 12px; border-radius:10px; display:flex; align-items:center; gap:10px; text-decoration:none}
+    .nav-link-custom:hover{background: rgba(255,255,255,0.06); transform:translateX(6px); color:#fff}
+    .nav-link-custom.active{background: rgba(255,255,255,0.06); border-left:4px solid var(--accent); color:#fff}
+
+
+    /* Content */
+    .main{flex:1; padding:28px;}
+    .layout{display:flex}
+    .content-wrap{margin-left: 260px; padding:28px}
+
+    .title-page{font-size:26px; font-weight:700; color:#072617}
+
+    .card-custom{border-radius:12px; border:0; box-shadow: 0 6px 20px rgba(8,32,18,0.06); background: var(--card-bg)}
+
+    /* Table */
+    .table thead th{border-bottom:0}
+    .table tbody tr:hover{background: linear-gradient(90deg,#f3fff7, #fbfffb)}
+
+    .status-pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; font-weight:600; text-transform:capitalize}
+    .status-pendente{background:#fff3cd; color:#7a5a00}
+    .status-processando{background:#e6f7ff; color:#055160}
+    .status-enviado{background:#e6f0ff; color:#163a8a}
+    .status-entregue{background:#e6ffef; color:#0a6f3a}
+    .status-cancelado{background:#ffecec; color:#8a0b0b}
+
+    /* Controls */
+    .controls{display:flex; gap:12px; align-items:center}
+    .search-input{min-width:260px}
+
+    
+  </style>
+</head>
+
+<body>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div class="fw-bold text-uppercase">EcoBox Admin</div>
+        <div class="muted">Painel de Controle</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <nav class="d-flex flex-column mt-2">
+      <a class="nav-link-custom" href="/admin/estatisticas"><i data-lucide="bar-chart-3"></i> Estatísticas</a>
+      <a class="nav-link-custom" href="/admin/produtos"><i data-lucide="package"></i> Produtos</a>
+      <a class="nav-link-custom active" href="/admin/pedidos"><i data-lucide="receipt"></i> Pedidos</a>
+      <a class="nav-link-custom" href="/admin/clientes"><i data-lucide="users"></i> Clientes</a>
+    </nav>
+
+    <hr>
+
+    <div class="mt-auto">
+      <a href="/visitante" class="nav-link-custom"><i data-lucide="log-out"></i> Sair</a>
+    </div>
+  </aside>
+
+  <!-- Conteúdo -->
+  <main class="main w-100">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="title-page mb-1">Gerenciamento de Pedidos</h1>
+        <small class="text-muted">Visão geral dos pedidos recebidos e status de entrega</small>
+      </div>
+
+      <div class="d-flex gap-3 align-items-center">
+        <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar"><i data-lucide="menu"></i></button>
+
+        <div class="controls">
+          <input id="search" class="form-control search-input" placeholder="Buscar por ID, cliente ou status" />
+
+          <select id="filterStatus" class="form-select" style="min-width:160px">
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="processando">Processando</option>
+            <option value="enviado">Enviado</option>
+            <option value="entregue">Entregue</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-custom p-3 mb-4">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="pedidosTable">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for p in pedidos %}
+            <tr data-id="{{ p.id }}">
+              <td><strong>#{{ p.id }}</strong></td>
+              <td>{{ p.cliente }}</td>
+              <td>R$ {{ "%.2f"|format(p.total) }}</td>
+            
+              <td>
+                <span class="status-pill
+                  {% if p.status == 'pendente' %} status-pendente
+                  {% elif p.status == 'processando' %} status-processando
+                  {% elif p.status == 'enviado' %} status-enviado
+                  {% elif p.status == 'entregue' %} status-entregue
+                  {% elif p.status == 'cancelado' %} status-cancelado
+                  {% endif %}">
+                  {{ p.status }}
+                </span>
+              </td>
+            
+              <td>{{ p.data_.strftime("%d/%m/%Y %H:%M") }}</td>
+            
+              <!-- COLUNA DE AÇÕES CORRETA -->
+              <td class="text-end">
+            
+                <!-- Botão de detalhes -->
+                <a href="/admin/pedidos/{{ p.id }}" class="btn btn-sm btn-outline-primary">
+                  Detalhes
+                </a>
+            
+                <!-- Botão de excluir ao lado -->
+                <form method="POST"
+                      action="{{ url_for('admin_pedido_deletar', pedido_id=p.id) }}"
+                      style="display:inline;"
+                      onsubmit="return confirm('Tem certeza que deseja excluir o pedido #{{ p.id }}?');">
+            
+                  <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
+                    Excluir
+                  </button>
+                </form>
+            
+              </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            
+        </table>
+      </div>
+
+      <!-- footer com paginação simples -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <small class="text-muted">Mostrando <span id="shownCount">0</span> pedidos</small>
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">»</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    {% if stats is not defined %}
+  {% set stats = {} %}
+{% endif %}
+
+<!-- Espaço para cards rápidos -->
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card card-custom p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">Pedidos hoje</small>
+              <div class="h5 mt-1">{{ stats.hoje|default(0) }}</div>
+            </div>
+            <i data-lucide="shopping-cart" width="36" height="36"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-custom p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">Pendentes</small>
+              <div class="h5 mt-1">{{ stats.pendentes|default(0) }}</div>
+            </div>
+            <i data-lucide="clock" width="36" height="36"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-custom p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">Receita (Mês)</small>
+              <div class="h5 mt-1">R$ {{ stats.receita_mes|default('0,00') }}</div>
+            </div>
+            <i data-lucide="dollar-sign" width="36" height="36"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal quick view (exemplo) -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pedido <span id="modalPedidoId"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body" id="modalBody">Carregando...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  lucide.createIcons();
+
+  // Toggle sidebar on small screens
+  document.getElementById('toggleSidebar').addEventListener('click', function(){
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  // Search + filter (client-side nitro to improve UX). Works on already-rendered table rows.
+  const searchInput = document.getElementById('search');
+  const filterSelect = document.getElementById('filterStatus');
+  const table = document.getElementById('pedidosTable');
+  const rows = Array.from(table.querySelectorAll('tbody tr'));
+  const shownCountEl = document.getElementById('shownCount');
+
+  function applyFilters(){
+    const q = (searchInput.value || '').toLowerCase();
+    const status = filterSelect.value;
+    let shown = 0;
+
+    rows.forEach(r => {
+      const txt = r.innerText.toLowerCase();
+      const rowStatus = r.querySelector('.status-pill')?.innerText?.trim().toLowerCase() || '';
+
+      const matchesQuery = q === '' || txt.indexOf(q) !== -1;
+      const matchesStatus = status === '' || rowStatus === status;
+
+      if(matchesQuery && matchesStatus){
+        r.style.display = '';
+        shown++;
+      } else {
+        r.style.display = 'none';
+      }
+    });
+
+    shownCountEl.textContent = shown;
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  filterSelect.addEventListener('change', applyFilters);
+  // initial count
+  applyFilters();
+
+  // Delegação de evento para Quick View (sem onclick inline)
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.quickview-btn');
+  if (!btn) return;
+  const id = btn.dataset.pedidoId;
+  if (id) openQuickView(id);
+});
+
+  // Quick view modal example (you should replace fetch with your endpoint)
+  function openQuickView(id){
+    const modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+    document.getElementById('modalPedidoId').textContent = '#' + id;
+    document.getElementById('modalBody').innerHTML = '<p>Carregando detalhes do pedido ' + id + '...</p>';
+
+    // Exemplo: fetch(`/admin/pedidos/${id}/quick`).then(...)
+    modal.show();
+  }
+
+  // Expose to global so buttons in table can call it
+  window.openQuickView = openQuickView;
+</script>
+
+</body>
+</html>

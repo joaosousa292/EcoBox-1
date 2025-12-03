@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ecobox — Nossa História</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg1: #0d2b1d;
+      --bg2: #1c140a;
+      --green-light: #65ff7a;
+      --green-mid: #3fbf66;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; }
+    body {
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ==== FUNDO ANIMADO ESTILO /SITE ==== */
+.decors {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  background: radial-gradient(circle at bottom, var(--bg1), var(--bg2));
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(160px);
+  opacity: 0.4;
+  animation: float 20s infinite ease-in-out;
+}
+
+.blob.a {
+  width: 700px;
+  height: 700px;
+  background: rgba(89, 255, 166, 0.25);
+  top: -100px;
+  left: -150px;
+  animation-delay: 0s;
+}
+
+.blob.b {
+  width: 600px;
+  height: 600px;
+  background: rgba(140, 255, 197, 0.2);
+  top: 50%;
+  left: 70%;
+  animation-delay: 5s;
+}
+
+.blob.c {
+  width: 800px;
+  height: 800px;
+  background: rgba(56, 189, 148, 0.15);
+  bottom: -200px;
+  right: -100px;
+  animation-delay: 10s;
+}
+
+.blob.d {
+  width: 900px;
+  height: 900px;
+  background: rgba(101, 255, 122, 0.12);
+  bottom: -300px;
+  left: 20%;
+  animation-delay: 15s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(80px, -60px) scale(1.1); }
+}
+
+
+    header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13, 43, 29, 0.9);
+      padding: 18px 56px;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+    }
+
+    nav {
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    nav a {
+      color: #c8ffb8;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      transition: 0.3s ease;
+    }
+
+    nav a:hover { color: #a5ff77; transform: translateY(-2px); }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+      border-radius: 2px;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { opacity: 0.6; box-shadow: 0 0 6px rgba(101,255,122,0.4); }
+      to { opacity: 1; box-shadow: 0 0 14px rgba(101,255,122,0.9); }
+    }
+
+    main {
+      padding: 100px 60px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* HERO */
+    .hero {
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 1.5s ease;
+    }
+    
+    .hero.active { opacity: 1; transform: translateY(0); }
+
+    .hero h1 {
+      font-size: 64px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--green-light), #d8ffb2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      color: #d2ffd8;
+      font-size: 22px;
+    }
+
+    .hero a{
+      color: #3fbf66;
+      text-decoration: none;
+    }
+
+    /* HISTÓRIA */
+    .story-section {
+      display: flex;
+      flex-direction: column;
+      gap: 160px;
+      width: 100%;
+      max-width: 1300px;
+    }
+
+    .story-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 80px;
+      min-height: 80vh;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 1.3s ease;
+    }
+
+    .story-block.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .story-block:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .story-text {
+      flex: 1;
+      max-width: 550px;
+    }
+
+    .story-text h2 {
+      font-size: 32px;
+      color: var(--green-light);
+      margin-bottom: 14px;
+    }
+
+    .story-text p {
+      font-size: 18px;
+      color: #e8ffe8;
+      line-height: 1.8;
+    }
+
+    .story-block img {
+      flex: 1;
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: transform 2.0s ease, opacity 1s ease;
+    }
+
+    .story-block.active img {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    .quote {
+      text-align: center;
+      font-style: italic;
+      color: #b8f7c5;
+      font-size: 24px;
+      margin-top: 100px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1.2s ease;
+    }
+
+    .quote.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FEEDBACK */
+    .feedback-container {
+      margin-top: 100px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .feedback-btn {
+      background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+      border: none;
+      padding: 16px 38px;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #0d2b1d;
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .feedback-btn:hover {
+      transform: scale(1.07);
+    }
+
+    .feedback-box {
+      margin: 30px auto 0;
+      max-width: 800px;
+      width: 90%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    .feedback-box.open {
+      max-height: 700px;
+      opacity: 1;
+    }
+
+    .feedback-box textarea {
+      width: 100%;
+      height: 200px;
+      border-radius: 16px;
+      padding: 20px;
+      border: none;
+      outline: none;
+      resize: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 17px;
+      margin-bottom: 20px;
+    }
+
+    .feedback-box button {
+      background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #0d2b1d;
+      font-size: 17px;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .feedback-box button:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: #d3f5d8;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.08));
+      margin-top: 120px;
+    }
+    .floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+  </style>
+</head>
+<body>
+  <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+  <nav>
+    <a href="/site"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia" class="active"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+  <main>
+    <div class="hero">
+      <h1>A História da EcoBox 🌱</h1>
+      <p>De um sonho verde à revolução do cotidiano sustentável.</p>
+      <p><a href="/sobre">Criadores</a></p>
+    </div>
+
+    <section class="story-section">
+      <div class="story-block">
+        <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1600&q=80" alt="Ideia sustentável">
+        <div class="story-text">
+          <h2>Um Sonho Sustentável</h2>
+          <p>Tudo começou com um sonho ousado: repensar o destino do lixo diário e transformar o descarte em algo útil. Assim nasceu a <strong>EcoBox</strong> — uma ideia para tornar o dia a dia mais prático, funcional e em harmonia com o planeta.</p>
+        </div>
+      </div>
+
+      <div class="story-block">
+        <img src="https://blog.brkambiental.com.br/wp-content/uploads/2024/02/paises-mais-sustentaveis-do-mundo.jpeg" alt="EcoBox urbana">
+        <div class="story-text">
+          <h2>Da Cidade para o Mundo</h2>
+          <p>Inspirada na rotina agitada das cidades, a EcoBox foi criada para quem busca praticidade e consciência ecológica. Leve, dobrável e multifuncional, ela acompanha o ritmo moderno sem abrir mão da sustentabilidade.</p>
+        </div>
+      </div>
+
+      <div class="story-block">
+        <img src="https://s2-umsoplaneta.glbimg.com/bAkC0Ke1zz5KenxD51xnNx7xgQc=/0x0:2121x1414/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_7d5b9b5029304d27b7ef8a7f28b4d70f/internal_photos/bs/2024/A/9/db0Bp6QAWO6lBAFlr9iQ/gettyimages-1488614341.jpg" alt="Materiais ecológicos">
+        <div class="story-text">
+          <h2>Design Verde e Inteligente</h2>
+          <p>Produzida com <strong>plástico reciclado</strong> e <strong>bambu natural</strong>, cada unidade evita o descarte de cerca de 1kg de plástico. É a junção entre inovação, propósito e respeito ao meio ambiente.</p>
+        </div>
+      </div>
+
+      <div class="story-block">
+        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=80" alt="Produto multifuncional">
+        <div class="story-text">
+          <h2>Mais do que um Produto</h2>
+          <p>A EcoBox é símbolo de uma filosofia: transformar resíduos em utilidade. Com ela, a sustentabilidade se torna parte do cotidiano — prática, moderna e acessível para todos.</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="quote">“Mais do que uma simples caixa, a EcoBox representa uma maneira consciente e descomplicada de viver.”</p>
+
+    <div class="feedback-container">
+      <button class="feedback-btn" id="toggleFeedback">Deixar Feedback <i data-lucide="message-circle"></data></i></button>
+      <div class="feedback-box" id="feedbackBox">
+        
+        <form method="POST">
+          <textarea name="feedback" maxlength="400" placeholder="Conte o que achou da nossa história..." required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>© 2025 Ecobox — Da Cidade para o Mundo.</footer>
+
+  <script>
+    lucide.createIcons();
+
+    // animação de rolagem cinematográfica
+    const elements = document.querySelectorAll('.hero, .story-block, .quote');
+    function handleScroll() {
+      const trigger = window.innerHeight * 0.85;
+      elements.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        const bottom = el.getBoundingClientRect().bottom;
+        if (top < trigger && bottom > 0) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    // feedback toggle
+    const toggleBtn = document.getElementById('toggleFeedback');
+    const feedbackBox = document.getElementById('feedbackBox');
+    toggleBtn.addEventListener('click', () => {
+      feedbackBox.classList.toggle('open');
+      toggleBtn.textContent = feedbackBox.classList.contains('open')
+        ? 'Fechar Feedback ✖️'
+        : 'Deixar Feedback 💬';
+    });
+  </script>
+    <!-- Fundo animado estilo /site -->
+    <div class="decors">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+      <div class="blob d"></div>
+    </div>
+  
+</body>
+</html>

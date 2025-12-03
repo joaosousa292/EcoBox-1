@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EcoBox — Configurações</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg1: #0d2b1d; /* verde escuro */
+            --bg2: #1c140a; /* marrom escuro */
+            --muted: rgba(255, 255, 255, 0.1);
+            --green-light: #65ff7a;
+            --green-mid: #3fbf66;
+            --green-dark: #1a512d;
+            --brown-dark: #1c140a; /* Usado no botão "Solicitar Cópia" */
+        }
+
+        * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
+        body {
+            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        header {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(13, 43, 29, 0.9);
+            padding: 18px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+        }
+
+        nav {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        nav a {
+            position: relative;
+            color: #c8ffb8;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding-bottom: 6px;
+        }
+
+        nav a:hover {
+            color: #a5ff77;
+            transform: translateY(-2px);
+        }
+
+        nav a.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 100%;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+            box-shadow: 0 0 10px rgba(101, 255, 122, 0.7);
+            animation: glowline 1.6s ease-in-out infinite alternate;
+        }
+
+        nav i[data-lucide] {width: 18px; height: 18px;}
+
+        @keyframes glowline {
+            from {opacity: 0.7; box-shadow: 0 0 6px rgba(101, 255, 122, 0.4);}
+            to {opacity: 1; box-shadow: 0 0 14px rgba(101, 255, 122, 0.9);}
+        }
+
+        /* ---------------------- ESTILOS DE CONFIGURAÇÕES ---------------------- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+        }
+
+        .settings-header {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .settings-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--green-light), #d6ffb2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .settings-layout {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(30, 60, 40, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            width: 280px;
+            padding: 30px 0;
+            background: rgba(13, 43, 29, 0.7); 
+            border-right: 1px solid var(--muted);
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 30px;
+            text-decoration: none;
+            color: #c8ffb8;
+            font-weight: 600;
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer; 
+        }
+
+        .sidebar a i[data-lucide] {
+            width: 20px;
+            height: 20px;
+            color: var(--green-light);
+        }
+
+        .sidebar a:hover {
+            background: rgba(63, 191, 102, 0.2);
+            color: #a5ff77;
+        }
+
+        .sidebar a.active {
+            background: rgba(63, 191, 102, 0.3);
+            border-left: 4px solid var(--green-light);
+            padding-left: 26px;
+        }
+
+        /* Conteúdo Principal */
+        .settings-content {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active-tab {
+            display: block;
+        }
+
+        .settings-section h2 {
+            font-size: 28px;
+            color: var(--green-light);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--muted);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item span {
+            font-size: 16px;
+            color: #e3ffe8;
+        }
+        
+
+        input[type="text"], input[type="email"], input[type="password"], select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--green-mid);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            width: 250px;
+        }
+
+
+        input[type="checkbox"] {
+            width: 20px !important;
+            height: 20px;
+        }
+
+
+        .save-button {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            font-size: 16px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 30px;
+        }
+
+        .save-button:hover {
+            background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #d3f5d8;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.08));
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/"><i data-lucide="home"></i> Início</a>
+            <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+            <a href="/suporte"><i data-lucide="headphones"></i> Suporte</a>
+            <a href="/historia"><i data-lucide="book-open"></i>Nossa História</a>
+            <a href="/configuracoes" class="active"><i data-lucide="settings"></i> Configurações</a> 
+            <a href="#" onclick="confirmarSaida()"><i data-lucide="log-out"></i>Sair</a>
+            <a href="/carrinho"><i data-lucide="shopping-cart"></i>Carrinho</a>
+        </nav>
+        <script>
+            function confirmarSaida() {
+                if (confirm("Tem certeza que deseja sair da sua conta?")) {
+                    window.location.href = "/visitante";
+                }
+            }
+        </script>
+    </header>
+
+    <main>
+        <section class="settings-header">
+            <h1>⚙️ Configurações da Conta</h1>
+        </section>
+
+        <div class="settings-layout">
+            <aside class="sidebar">
+                <a class="tab-link active" data-tab="perfil"><i data-lucide="user"></i> Perfil e Dados</a>
+                <a class="tab-link" data-tab="seguranca"><i data-lucide="lock"></i> Segurança e Senha</a>
+                <a class="tab-link" data-tab="notificacoes"><i data-lucide="bell"></i> Notificações</a>
+                <a class="tab-link" data-tab="privacidade"><i data-lucide="eye-off"></i> Privacidade</a>
+                <a class="tab-link" data-tab="pagamento"><i data-lucide="credit-card"></i> Formas de Pagamento</a>
+            </aside>
+
+            <section class="settings-content">
+                
+                <div id="perfil" class="settings-section active-tab">
+                    <h2>Seus Dados Pessoais</h2>
+                    
+                    <div class="settings-item">
+                        <span>Nome de Usuário</span>
+                        <input type="text" value="gg">
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>E-mail</span>
+                        <input type="email" value="usuario@email.com">
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Localização (País/Região)</span>
+                        <select>
+                            <option value="br">Brasil</option>
+                            <option value="pt">Portugal</option>
+                        </select>
+                    </div>
+
+                    <button class="save-button"><i data-lucide="save" style="width: 16px; height: 16px; margin-right: 5px;"></i> Salvar Alterações</button>
+                </div>
+                
+                <div id="seguranca" class="settings-section">
+                    <h2>Segurança e Acesso</h2>
+                    
+                    <div class="settings-item">
+                        <span>Senha Atual</span>
+                        <input type="password" placeholder="Digite sua senha atual">
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Nova Senha</span>
+                        <input type="password" placeholder="Nova senha (mínimo 8 caracteres)">
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Confirme a Nova Senha</span>
+                        <input type="password" placeholder="Confirme a nova senha">
+                    </div>
+
+                    <button class="save-button"><i data-lucide="lock" style="width: 16px; height: 16px; margin-right: 5px;"></i> Atualizar Senha</button>
+                </div>
+
+                <div id="notificacoes" class="settings-section">
+                    <h2>Preferências de Notificação</h2>
+                    
+                    <div class="settings-item">
+                        <span>E-mails sobre Promoções e Novidades</span>
+                        <input type="checkbox" checked>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Notificações de Status do Pedido (E-mail)</span>
+                        <input type="checkbox" checked>
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Alertas de Segurança (SMS/E-mail)</span>
+                        <input type="checkbox" checked>
+                    </div>
+
+                    <button class="save-button"><i data-lucide="save" style="width: 16px; height: 16px; margin-right: 5px;"></i> Salvar Preferências</button>
+                </div>
+                
+                <div id="privacidade" class="settings-section">
+                    <h2>Controle de Privacidade e Dados</h2>
+                    
+                    <div class="settings-item">
+                        <span>Permitir o uso de dados anônimos para melhoria do serviço</span>
+                        <input type="checkbox" checked>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Exibir meu nome de usuário em avaliações de produtos (se houver)</span>
+                        <input type="checkbox">
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Solicitar uma cópia de todos os meus dados (LGPD)</span>
+                        <button class="save-button" style="background: var(--brown-dark);"><i data-lucide="download" style="width: 16px; height: 16px; margin-right: 5px;"></i> Solicitar Cópia</button>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Desejo excluir minha conta permanentemente</span>
+                        <button class="save-button" style="background: #a82424;"><i data-lucide="trash-2" style="width: 16px; height: 16px; margin-right: 5px;"></i> Excluir Conta</button>
+                    </div>
+                </div>
+                
+                <div id="pagamento" class="settings-section">
+                    <h2>Formas de Pagamento Salvas</h2>
+                    <p style="color: #c8ffb8; margin-top: 20px;">Nenhuma forma de pagamento salva. Adicione um novo cartão ou método de pagamento.</p>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <footer>© 2025 EcoBox — Tecnologia Sustentável.</footer>
+    
+    <script>
+        lucide.createIcons();
+
+        // CÓDIGO JAVASCRIPT PARA GERENCIAR AS ABAS
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const settingsSections = document.querySelectorAll('.settings-section');
+
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Impede o link de pular para o topo
+
+                    const targetTabId = this.getAttribute('data-tab');
+                    
+                    tabLinks.forEach(item => item.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    
+                    settingsSections.forEach(section => section.classList.remove('active-tab'));
+                    
+                    const targetSection = document.getElementById(targetTabId);
+                    if (targetSection) {
+                        targetSection.classList.add('active-tab');
+                    }
+                });
+            });
+
+            const firstLink = document.querySelector('.tab-link.active');
+            if (firstLink) {
+                const initialTabId = firstLink.getAttribute('data-tab');
+                const initialSection = document.getElementById(initialTabId);
+                if (initialSection) {
+                    initialSection.classList.add('active-tab');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

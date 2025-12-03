@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel Administrativo — Estatísticas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+body {
+    background: #f4f6f9;
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 260px;
+    background: #0d2b1d;
+    min-height: 100vh;
+    padding: 25px 18px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar h3 { font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.sidebar hr { border-color: rgba(255,255,255,0.15); margin: 20px 0; }
+.sidebar a { color: #e1e1e1; text-decoration: none; display: flex; align-items: center; font-size: 17px; padding: 12px 10px; border-radius: 10px; transition: 0.2s; font-weight: 500; }
+.sidebar a svg { margin-right: 12px; }
+.sidebar a:hover { background: rgba(255,255,255,0.12); color: #fff; transform: translateX(4px); }
+.sidebar a.active { background: #1a4e37; color: #fff; border-left: 4px solid #41c77a; padding-left: 12px; }
+.sidebar-bottom { margin-top: auto; }
+.content { flex: 1; padding: 30px; }
+.card-stat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 25px; border-radius: 12px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+.card-stat:hover { transform: translateY(-5px); }
+.card-stat i { width: 40px; height: 40px; }
+.card-stat .info { text-align: right; }
+.card-stat .info .title { font-weight: 600; font-size: 14px; color: #555; }
+.card-stat .info .value { font-size: 24px; font-weight: 700; }
+.table thead { background: #0d2b1d; color: #fff; }
+.table tbody tr:hover { background: rgba(0,0,0,0.05); }
+</style>
+</head>
+<body>
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>EcoBox Admin</h3>
+        <hr>
+        <a href="/admin/estatisticas" class="active"><i data-lucide="bar-chart-3"></i> Estatísticas</a>
+        <a href="/admin/produtos"><i data-lucide="package"></i> Produtos</a>
+        <a href="/admin/pedidos"><i data-lucide="receipt"></i> Pedidos</a>
+        <a href="/admin/clientes"><i data-lucide="users"></i> Clientes</a>
+        <hr>
+        <a href="/logout" class="sidebar-bottom"><i data-lucide="log-out"></i> Sair</a>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="content container-fluid">
+        <h1 class="mb-4">📊 Estatísticas Gerais</h1>
+
+        <!-- Cards principais -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <i data-lucide="dollar-sign" style="color:#41c77a;"></i>
+                    <div class="info">
+                        <div class="title">Total de Vendas</div>
+                        <div class="value">R$ {{ total_vendas | round(2) }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <i data-lucide="shopping-cart" style="color:#f39c12;"></i>
+                    <div class="info">
+                        <div class="title">Total de Pedidos</div>
+                        <div class="value">{{ total_pedidos }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <i data-lucide="package" style="color:#e74c3c;"></i>
+                    <div class="info">
+                        <div class="title">Produtos Estoque Baixo</div>
+                        <div class="value">{{ estoque_baixo | length }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <i data-lucide="message-circle" style="color:#3498db;"></i>
+                    <div class="info">
+                        <div class="title">Feedbacks Recentes</div>
+                        <div class="value">{{ feedbacks | length }}</div>
+                        <div class="name">{{ nome }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Últimos Pedidos -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Últimos Pedidos
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Total (R$)</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in ultimos_pedidos %}
+                        <tr>
+                            <td>{{ pedido.id }}</td>
+                            <td>{{ pedido.nome }}</td>
+                            <td>{{ pedido.total | round(2) }}</td>
+                            <td>{{ pedido.data_ }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top 5 Produtos Mais Vendidos -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Top 5 Produtos Mais Vendidos
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in mais_vendidos %}
+                        <tr>
+                            <td>{{ produto.nome }}</td>
+                            <td>{{ produto.quantidade }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Produtos Estoque Baixo -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Produtos com Estoque Baixo
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for p in estoque_baixo %}
+                    <li class="list-group-item">{{ p.nome }} - {{ p.estoque }} unidades</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Feedbacks Recentes -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Últimos Feedbacks
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for f in feedbacks %}
+                    <li class="list-group-item">{{ f.mensagem }} <span class="text-muted float-end">{{ f.data_envio }}</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

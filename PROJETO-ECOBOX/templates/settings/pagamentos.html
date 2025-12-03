@@ -1,0 +1,157 @@
+{# templates/settings/pagamentos.html #}
+{% extends "settings/base.html" %}
+{% block content %}
+
+<style>
+  .settings-section { padding: 22px; }
+  .pay-card {
+    max-width: 820px;
+    margin: 14px auto;
+    background: linear-gradient(180deg, rgba(20,46,28,0.45), rgba(10,30,20,0.25));
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .pay-list { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+  .pay-item {
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px; border-radius:10px; background: rgba(0,0,0,0.06);
+  }
+  .pay-left { display:flex; align-items:center; gap:12px; min-width:0; }
+  .card-meta { font-weight:700; color:#eaffea; }
+  .card-sub { font-size:13px; color:#cfeccf }
+  .pay-actions { display:flex; gap:8px; align-items:center; }
+  .btn-small { padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+  .btn-edit { background:transparent; color:#cfeccf; border:1px solid rgba(255,255,255,0.06); }
+  .btn-danger { background:#e35b5b; color:#fff; }
+  .btn-primary { background:var(--green-mid); color:#012; }
+  .badge-default { background:var(--green-light); color:#012; padding:6px 8px; border-radius:8px; font-weight:700; margin-left:8px; font-size:12px; }
+  .empty { color:#cfeccf; padding:12px; font-size:14px; }
+</style>
+
+<div class="settings-section" id="pagamentos">
+  <div class="pay-card" role="region" aria-label="Formas de pagamento">
+    <h2 style="color:var(--green-light); margin-bottom:6px;">Formas de Pagamento</h2>
+    <p class="small">Aqui ficam os métodos que você salvou. Você também pode remover ou definir como padrão.</p>
+
+    <div style="margin-top:12px;">
+      <button id="adicionarBtn" class="btn-small btn-primary">Adicionar método</button>
+      <span style="margin-left:12px; color:#cfeccf; font-size:13px;">(no checkout você pode salvar o cartão usado)</span>
+    </div>
+
+    <div class="pay-list" id="payList" style="margin-top:12px;">
+      {% for m in user.metodos %}
+      <div class="pay-item" data-id="{{ m.id }}">
+        <div class="pay-left">
+          <div>
+            <div class="card-meta">
+              {% if m.tipo == 'cartao' %}Cartão {{ m.bandeira|title }}{% elif m.tipo=='pix' %}PIX{% else %}{{ m.tipo|capitalize }}{% endif %}
+              {% if m.eh_padrao %}<span class="badge-default">Padrão</span>{% endif %}
+            </div>
+            <div class="card-sub">
+              {% if m.ultimos4 %}•••• {{ m.ultimos4 }} • Expires {{ m.expiracao }}{% else %}cadastro: {{ m.criado_em }}{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="pay-actions">
+          {% if not m.eh_padrao %}
+          <button class="btn-small btn-edit set-default">Definir padrão</button>
+          {% endif %}
+          <button class="btn-small btn-danger remove">Remover</button>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty">Nenhum método de pagamento salvo ainda.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  const payList = document.getElementById('payList');
+
+  document.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('button');
+    if (!btn) return;
+
+    // Remover
+    if (btn.classList.contains('remove')) {
+      const item = btn.closest('.pay-item');
+      const id = item.dataset.id;
+      if (!confirm("Remover este método de pagamento?")) return;
+      try {
+        const res = await fetch("{{ url_for('pagamentos_remover') }}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ id: id })
+        });
+        const data = await res.json().catch(()=>({}));
+        if (res.ok && data.ok) {
+          item.remove();
+          showToast("Método removido.");
+        } else {
+          showToast(data.error || "Erro ao remover.", true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Erro de rede.", true);
+      }
+    }
+
+    // Definir padrão
+    if (btn.classList.contains('set-default')) {
+      const item = btn.closest('.pay-item');
+      const id = item.dataset.id;
+      try {
+        const res = await fetch("{{ url_for('pagamentos_definir_padrao') }}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ id: id })
+        });
+        const data = await res.json().catch(()=>({}));
+        if (res.ok && data.ok) {
+          // atualizar UI: recarregar a página é simples e seguro
+          location.reload();
+        } else {
+          showToast(data.error || "Erro ao definir padrão", true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Erro de rede.", true);
+      }
+    }
+
+    // Adicionar (redirect para checkout/flow de adicionar cartão)
+    if (btn.id === 'adicionarBtn') {
+      // redireciona para checkout/adicionar-cartao ou modal — aqui só um exemplo de redirect
+      window.location.href = "/pagamentos/novo"; // implemente rota se quiser
+    }
+  });
+
+  function showToast(msg, err=false, ms=2200) {
+    let t = document.getElementById('toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'toast';
+      t.style.position='fixed';
+      t.style.right='30px';
+      t.style.bottom='30px';
+      t.style.padding='10px 14px';
+      t.style.borderRadius='8px';
+      t.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';
+      t.style.fontWeight='700';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.background = err ? '#dc3545' : '#28a745';
+    t.style.color = '#fff';
+    t.style.display = 'block';
+    clearTimeout(t._t);
+    t._t = setTimeout(()=> t.style.display='none', ms);
+  }
+</script>
+
+{% endblock %}

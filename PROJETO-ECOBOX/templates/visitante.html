@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewTech - Visitante</title>
+  <style>
+    /* ====== Fundo com profundidade ====== */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      height: 100vh;
+      background: linear-gradient(160deg, #ffffff, #22571b, #000000);
+      background-size: 200% 200%;
+      animation: fundo-movendo 12s ease-in-out infinite alternate;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      text-align: center;
+      color: #fff;
+      position: relative;
+    }
+
+    @keyframes fundo-movendo {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    /* ====== Formas flutuantes ====== */
+    .forma {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.35;
+      filter: blur(20px);
+      animation: flutuar 10s ease-in-out infinite;
+    }
+
+    .forma:nth-child(1) {
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, #8b5e3c, #604226);
+      top: 10%; left: 5%;
+      animation-delay: 0s;
+    }
+
+    .forma:nth-child(2) {
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, #76c566, #4d7d44);
+      bottom: 15%; right: 10%;
+      animation-delay: 2s;
+    }
+
+    .forma:nth-child(3) {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, #63461a, #927c55);
+      top: 25%; right: 25%;
+      animation-delay: 4s;
+    }
+
+    .forma:nth-child(4) {
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, #7b9b62, #698b4f);
+      bottom: 10%; left: 20%;
+      animation-delay: 6s;
+    }
+
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-40px) scale(1.1); }
+    }
+
+    /* ====== Camada de brilho leve ====== */
+    
+
+    @keyframes luz-movendo {
+      from { transform: translate(0,0) scale(1); }
+      to { transform: translate(3%,3%) scale(1.05); }
+    }
+
+    /* ====== Conteúdo ====== */
+    .conteudo {
+      z-index: 2;
+      max-width: 650px;
+      backdrop-filter: blur(10px) saturate(130%);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4vh 5%;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      animation: surgir 1.2s ease forwards;
+    }
+
+    @keyframes surgir {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #e5f4e1;
+      text-shadow: 0 0 20px rgba(200,255,200,0.4);
+      margin-bottom: 10px;
+    }
+
+    h1 strong {
+      color: #b4e68c;
+      text-shadow: 0 0 30px rgba(180,255,180,0.5);
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #f5eede;
+      margin-bottom: 40px;
+    }
+
+    /* ====== Botão ====== */
+    a {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(90deg, #5d9b61, #93cc7f);
+      padding: 14px 35px;
+      border-radius: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      transform: scale(1.08);
+      background: linear-gradient(90deg, #7fd492, #c1f0a5);
+      box-shadow: 0 0 30px rgba(160,255,180,0.6);
+    }
+
+    /* ====== Responsividade ====== */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.2rem; }
+      p { font-size: 1rem; }
+      a { padding: 12px 25px; font-size: 0.95rem; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.7rem; }
+      p { font-size: 0.9rem; }
+      .forma { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="forma"></div>
+  <div class="forma"></div>
+  <div class="forma"></div>
+  <div class="forma"></div>
+  <div class="luz"></div>
+
+  <div class="conteudo">
+    <h1>Bem-vindo à <strong>EcoBox</strong></h1>
+    <p>De um sonho verde à revolução do cotidiano sustentável.  
+       Inove conosco e construa um futuro mais verde.</p>
+    <a href="/">Entrar / Cadastrar-se</a>
+  </div>
+</body>
+</html>

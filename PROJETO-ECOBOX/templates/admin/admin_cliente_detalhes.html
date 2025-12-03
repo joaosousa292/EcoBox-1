@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Cliente — EcoBox Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --sidebar-bg:#0d2b1d;
+      --accent:#41c77a;
+      --surface:#f5f7fa;
+      --text:#0d2b1d;
+      --muted:#6c7a74;
+    }
+    body{ background: #eaf3ea;}
+    /* Sidebar (estilos do sidebar original que você enviou) */
+    .sidebar {
+      width: 260px;
+      background: #0d2b1d;
+      min-height: 100vh;
+      padding: 25px 18px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand .logo{
+      width:44px; height:44px; border-radius:10px;
+      background: linear-gradient(135deg,var(--accent), #1ea56a);
+      display:flex; align-items:center; justify-content:center; font-weight:700; color:#042418; font-size:18px;
+    }
+
+    .sidebar hr {
+      border-color: rgba(255, 255, 255, 0.15);
+      margin: 20px 0;
+    }
+
+    .nav-link-custom{color: #dbeee2; padding:10px 12px; border-radius:10px; display:flex; align-items:center; gap:10px; text-decoration:none}
+    .nav-link-custom:hover{background: rgba(255,255,255,0.06); transform:translateX(6px); color:#fff}
+    .nav-link-custom.active{background: rgba(255,255,255,0.06); border-left:4px solid var(--accent); color:#fff}
+
+    /* Content wide */
+    .content{margin-left:260px;padding:44px 64px;max-width:1700px}
+    .page-title{font-size:30px;font-weight:800;margin:0 0 6px}
+    .subtle{color:var(--muted)}
+    /* header card */
+    .profile-card{display:flex;gap:28px;align-items:center;background:#fff;padding:28px;border-radius:16px;box-shadow:0 10px 30px rgba(6,24,18,0.06);margin-bottom:28px}
+    .photo{width:130px;height:130px;border-radius:16px;object-fit:cover;box-shadow:0 8px 20px rgba(0,0,0,0.08)}
+    .meta h2{margin:0;font-size:26px;font-weight:800}
+    .meta .muted{color:var(--muted);margin-top:6px}
+    /* stats blocks inside header */
+    .stats-wrap{display:flex;gap:14px;align-items:center;margin-left:auto}
+    .stat-card{background:#fff;border-radius:12px;padding:12px 18px;box-shadow:0 6px 18px rgba(8,32,18,0.04);text-align:center;min-width:150px}
+    .stat-label{color:var(--muted);font-size:13px}
+    .stat-value{font-weight:800;font-size:18px;margin-top:6px}
+    /* layout */
+    .wide-grid{display:grid;grid-template-columns: 1fr 380px; gap:24px}
+    .card-pro{background:#fff;padding:22px;border-radius:14px;box-shadow:0 8px 24px rgba(8,32,18,0.04)}
+    .card-title{font-weight:800;font-size:18px;margin-bottom:14px}
+    .stat{font-weight:800;font-size:18px}
+    .kv{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:10px;flex-direction:column}
+    .btn-soft{background:#f3f6f3;border:none;padding:10px 14px;border-radius:10px}
+    table thead th{background:#f0f6f2;font-weight:700}
+    @media(max-width:980px){.wide-grid{grid-template-columns:1fr}.content{padding:20px}}
+  </style>
+</head>
+<body>
+  <!-- Sidebar: substituído pelo sidebar original (apenas este bloco foi mexido) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">EB</div>
+      <div>
+        <div class="fw-bold text-uppercase">EcoBox Admin</div>
+        <div class="muted">Painel de Controle</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <nav class="d-flex flex-column mt-2">
+      <a class="nav-link-custom" href="/admin/estatisticas"><i data-lucide="bar-chart-3"></i> Estatísticas</a>
+      <a class="nav-link-custom" href="/admin/produtos"><i data-lucide="package"></i> Produtos</a>
+      <a class="nav-link-custom" href="/admin/pedidos"><i data-lucide="receipt"></i> Pedidos</a>
+      <a class="nav-link-custom active" href="/admin/clientes"><i data-lucide="users"></i> Clientes</a>
+    </nav>
+
+    <hr>
+
+    <div class="mt-auto">
+      <a href="/admin/logout" class="nav-link-custom"><i data-lucide="log-out"></i> Sair</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <a href="/admin/clientes" class="d-inline-flex align-items-center mb-3 text-decoration-none subtle"><i data-lucide="arrow-left"></i><span class="ms-2">Voltar à lista</span></a>
+
+    
+
+    <!-- PROFILE CARD (com estatísticas) -->
+    <div class="profile-card">
+      {# normaliza fonte da imagem do cliente e adiciona fallback onerror #}
+{% set foto_raw = cliente.foto_usuario if cliente.foto_usuario else 'static/img/padrao_foto.png' %}
+
+{% if foto_raw.startswith('http') or foto_raw.startswith('https') %}
+  <img src="{{ foto_raw }}" alt="foto" class="photo"
+       onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/padrao_foto.png') }}'">
+{% elif foto_raw.startswith('/') %}
+  {# caminho absoluto (ex: /static/uploads/arquivo.jpg) #}
+  <img src="{{ foto_raw }}" alt="foto" class="photo"
+       onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/padrao_foto.png') }}'">
+{% else %}
+  {# caminho relativo: remove 'static/' caso exista e usa url_for #}
+  {% if foto_raw.startswith('static/') %}
+    {% set foto_static = foto_raw.replace('static/', '') %}
+  {% else %}
+    {% set foto_static = foto_raw %}
+  {% endif %}
+  <img src="{{ url_for('static', filename=foto_static) }}" alt="foto" class="photo"
+       onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/padrao_foto.png') }}'">
+{% endif %}
+
+      <div class="meta">
+        <h2>{{ cliente.nome }}</h2>
+        <div class="muted subtle">{{ cliente.email }}</div>
+        <div class="muted mt-2">ID: #{{ cliente.id }} • Cadastrado: {{ cliente.data_cadastro.strftime('%d/%m/%Y') if cliente.data_cadastro else '-' }}</div>
+        <div class="mt-3 d-flex gap-3">
+          <span class="badge {% if cliente.status=='bloqueado' %}bg-danger{% elif cliente.status=='inativo' %}bg-secondary{% else %}bg-success{% endif %}">{{ cliente.status or 'ativo' }}</span>
+          <span class="kv">País: {{ cliente.pais_regiao or '-' }}</span>
+        </div>
+      </div>
+
+      <!-- BLOCOS DE ESTATÍSTICAS -->
+      
+
+      <div style="margin-left:auto" class="actions">
+        <a href="/admin/clientes/{{ cliente.id }}/editar" class="btn btn-warning">Editar cliente</a>
+        <form method="post" action="/admin/clientes/{{ cliente.id }}/deletar" onsubmit="return confirm('Excluir este cliente?');">
+          <button class="btn btn-outline-danger">Excluir</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wide-grid">
+      <!-- MAIN: pedidos & activity -->
+      <section>
+        <div class="card-pro mb-4">
+          <div class="card-title">Resumo rápido</div>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="kv">Total de pedidos</div>
+              <div class="stat">{{ stats.total_pedidos or 0 }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="kv">Total gasto</div>
+              <div class="stat">R$ {{ '%.2f'|format(stats.total_gasto or 0) }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="kv">Horas online</div>
+              <div class="stat">{{ cliente.horas_online or 0 }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-pro mb-4">
+          <div class="card-title">Últimos pedidos</div>
+          {% if pedidos %}
+            <div class="table-responsive">
+              <table class="table mb-0">
+                <thead>
+                  <tr><th>ID</th><th>Total</th><th>Status</th><th>Data</th><th class="text-end">Ações</th></tr>
+                </thead>
+                <tbody>
+                  {% for p in pedidos %}
+                  <tr>
+                    <td>#{{ p.id }}</td>
+                    <td>R$ {{ '%.2f'|format(p.total) }}</td>
+                    <td><span class="badge {% if p.status=='entregue' %}bg-success{% elif p.status=='cancelado' %}bg-danger{% else %}bg-primary{% endif %}">{{ p.status }}</span></td>
+                    <td>{{ p.data_.strftime('%d/%m/%Y %H:%M') if p.data_ else '-' }}</td>
+                    <td class="text-end"><a href="/admin/pedidos/{{ p.id }}" class="btn btn-sm btn-outline-primary">Ver</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="subtle mb-0">Nenhum pedido encontrado.</p>
+          {% endif %}
+        </div>
+
+        <div class="card-pro">
+          <div class="card-title">Informações adicionais</div>
+          <p class="kv mb-1"><strong>Recebe promoções:</strong> {{ 'Sim' if cliente.receber_promocoes else 'Não' }}</p>
+          <p class="kv mb-1"><strong>Notificações de pedido:</strong> {{ 'Sim' if cliente.notificacoes_pedido else 'Não' }}</p>
+          <p class="kv mb-1"><strong>Alertas de segurança:</strong> {{ 'Sim' if cliente.alertas_seguranca else 'Não' }}</p>
+        </div>
+      </section>
+
+      <!-- SIDEBAR direito: ações rápidas e histórico -->
+      <aside>
+        <div class="card-pro mb-4">
+          <div class="card-title">Ações rápidas</div>
+          <a href="/admin/clientes/{{ cliente.id }}/historico" class="btn btn-outline-primary w-100 mb-2">Ver histórico completo</a>
+          <a href="/admin/pedidos?cliente_id={{ cliente.id }}" class="btn btn-soft w-100 mb-2">Filtrar pedidos</a>
+          <a href="/admin/clientes" class="btn btn-light w-100">Voltar à lista</a>
+        </div>
+
+        <div class="card-pro">
+          <div class="card-title">Meta</div>
+          <div class="kv">Última atividade</div>
+          <div class="muted mt-2">{{ cliente.ultima_atividade if cliente.ultima_atividade else '—' }}</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

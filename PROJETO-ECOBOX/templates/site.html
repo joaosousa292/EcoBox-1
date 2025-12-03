@@ -1,0 +1,667 @@
+  <!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ecobox — Início</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --bg1: #0d2b1d; /* verde escuro */
+        --bg2: #1c140a; /* marrom escuro */
+        --accent-a: rgba(89, 255, 166, 0.25);
+        --accent-b: rgba(200, 255, 120, 0.18);
+        --accent-c: rgba(94, 255, 0, 0.14);
+        --muted: rgba(255, 255, 255, 0.1);
+        --green-light: #65ff7a;
+        --green-mid: #3fbf66;
+        --green-dark: #1a512d;
+        --brown-dark: #1c140a;
+      }
+
+      * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
+      body {
+        background: linear-gradient(180deg, var(--bg1), var(--bg2));
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      header {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(13, 43, 29, 0.9);
+        padding: 18px 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(6px);
+      }
+
+      nav {
+        display: flex;
+        gap: 50px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      nav a {
+        position: relative;
+        color: #c8ffb8;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        transition: color 0.3s ease, transform 0.3s ease;
+        padding-bottom: 6px;
+      }
+
+      nav a:hover {
+        color: #a5ff77;
+        transform: translateY(-2px);
+      }
+
+      nav a.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        width: 100%;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+        box-shadow: 0 0 10px rgba(101, 255, 122, 0.7);
+        animation: glowline 1.6s ease-in-out infinite alternate;
+      }
+
+      nav i[data-lucide] {width: 18px; height: 18px;}
+
+      @keyframes glowline {
+        from {opacity: 0.7; box-shadow: 0 0 6px rgba(101, 255, 122, 0.4);}
+        to {opacity: 1; box-shadow: 0 0 14px rgba(101, 255, 122, 0.9);}
+      }
+
+      /* ---------------------- SEÇÃO DE BOAS-VINDAS ---------------------- */
+      main {
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 90px 60px;
+        gap: 100px;
+        align-items: flex-start;
+      }
+
+      .welcome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1200px;
+        margin-top: 40px;
+        padding: 20px 10px;
+        position: relative;
+      }
+
+      .welcome-title {
+        font-size: 90px;
+        font-weight: 900;
+        margin-top: -120px;
+        margin-bottom: 10px;
+        background: linear-gradient(90deg, var(--green-light), #d6ffb2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 50px;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        font-weight: 800;
+        color: #b8e7c1;
+        margin-top: -5px;
+      }
+
+      /* ---------------------- EFEITOS DECORATIVOS ---------------------- */
+      .welcome-right {
+        position: relative;
+        width: 300px;
+        height: 150px;
+      }
+
+      .glow-orb {
+        position: absolute;
+        right: 0;
+        top: 20px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(0, 255, 128, 0.4), rgba(77, 255, 120, 0.05));
+        box-shadow: 0 0 50px rgba(0, 255, 128, 0.25);
+        animation: orbPulse 6s ease-in-out infinite;
+      }
+
+      @keyframes orbPulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.2); opacity: 1; }
+      }
+
+      /* ---------------------- BLOCOS DE TEXTO ---------------------- */
+      .intro-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        max-width: 1200px;
+        margin-top: -200px;
+        margin-bottom: 60px;
+      }
+
+      .info-block {
+        flex: 1;
+        background: rgba(30, 60, 40, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 38px 22px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+        min-width: 280px;
+        max-width: 516px;
+        transition: all 0.35s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .info-block:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.6);
+        background: rgba(48, 90, 50, 0.5);
+      }
+
+      .info-block h2 {
+        font-size: 26px;
+        font-weight: 700;
+        margin-top: -10px;
+        margin-bottom: 12px;
+        color: var(--green-light);
+        transition: transform 0.3s ease, color 0.3s ease;
+      }
+
+      .info-block:hover h2 {
+        color: #a3ffb7; 
+        transform: scale(1.05);
+      }
+
+      .info-block p {
+        color: #e3ffe8; 
+        font-size: 15px; 
+        line-height: 1.55;
+      }
+
+      /* ---------------------- IMAGEM PRINCIPAL ---------------------- */
+      .tech-img {
+        position: absolute;
+        right: 33px;
+        top: 235px;
+        width: 50%;
+        max-width: 720px;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        transform: rotate(-2deg);
+        animation: slowfloat 16s ease-in-out infinite;
+      }
+
+      .tech-img img {
+        width: 133%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.95) contrast(1.15) saturate(1.1);
+      }
+
+      /* ---------------------- POSTERS ---------------------- */
+      .poster-wrap {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        flex-wrap: wrap;
+        margin-top: 40px;
+        position: absolute;
+        bottom: 40px;
+        left: 31%;
+        transform: translateX(-50%);
+      }
+
+      .poster {
+        width: 245px;
+        height: 440px;
+        border-radius: 18px;
+        padding: 26px 40px;
+        background: linear-gradient(180deg, rgba(60, 120, 70, 0.4), rgba(25, 45, 30, 0.2));
+        backdrop-filter: blur(6px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .poster:hover {
+        transform: scale(1.05);
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.6);
+        color: #7bffb2;
+        transform: scale(1.05);
+      }
+
+      .poster i[data-lucide] {
+        width: 72px;
+        height: 72px;
+        stroke-width: 2.2;
+        color: var(--green-light);
+      }
+
+      .poster h2 {font-size: 18px; font-weight: 600; margin-top: 8px; color: #eaffec;}
+      .poster p {color: #caffd0; line-height: 1.45; text-align: center; max-width: 200px; font-size: 15px;}
+      .poster button {
+        background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+        font-size: 13px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+
+      .poster button:hover {
+        background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+        transform: scale(1.08);
+      }
+
+      /* ---------------------- DECORAÇÕES ---------------------- */
+      .decors {position: absolute; inset: 0; z-index: 1; pointer-events: none;}
+      .blob, .stripes, .checker, .tile-grid {filter: blur(4px); opacity: 0.9;}
+      .blob.a {width: 280px; height: 160px; left: 10%; top: 8%; background: var(--accent-a);}
+      .blob.b {width: 220px; height: 180px; right: 12%; bottom: 8%; background: var(--accent-b);}
+      .blob.c {width: 180px; height: 140px; left: 15%; bottom: 25%; background: var(--accent-c);}
+      .blob.d {width: 300px; height: 100px; left: 40%; top: 60%; background: var(--muted);}
+
+      @keyframes slowfloat {
+        0% {transform: translateY(0) rotate(-2deg);}
+        50% {transform: translateY(-16px) rotate(1deg);}
+        100% {transform: translateY(0) rotate(-2deg);}
+      }
+
+      footer {
+        text-align: center;
+        padding: 22px;
+        color: #d3f5d8;
+        background: linear-gradient(180deg, transparent, rgba(0,0,0,0.08));
+      }
+      
+  .floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+
+
+  <nav>
+    <a href="/site" class="active"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+    <main>
+      <div class="decors">
+        <div class="blob a"></div>
+        <div class="blob b"></div>
+        <div class="blob c"></div>
+        <div class="blob d"></div>
+      </div>
+
+      <section class="welcome">
+        <div class="welcome-left">
+          <h1 class="welcome-title">👋 Bem-vindo, {{ usuario }}!</h1>
+          <p class="subtitle">Ecobox — Um futuro mais renovável!</p>
+        </div>
+        <div class="welcome-right">
+          <div class="glow-orb"></div>
+        </div>
+      </section>
+
+      <div class="intro-row">
+        <div class="info-block">
+          <h2>Resistencia</h2>
+          <p>Plástico PEAD reciclado: feito a partir de lixo de casas e indústrias, o que garante que aguente pancadas e dure bastante.</p>
+        </div>
+        <div class="info-block">
+          <h2>Inovação e Natureza</h2>
+          <p>Bambu maciço trabalhado: material ecológico, leve e com visual natural — aplicado na parte de cima ou na superfície da mesa.</p>
+        </div>
+      </div>
+
+      <div class="tech-img">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000" alt="Imagem de tecnologia verde">
+      </div>
+
+      <div class="poster-wrap">
+        <div class="poster">
+          <i data-lucide="shopping-cart"></i>
+          <h2>Loja</h2>
+          <p>O bambu, matéria-prima 100% renovável, tem um crescimento até trinta vezes mais veloz que o da madeira convencional.</p>
+          <button>Explorar</button>
+        </div>
+
+        <div class="poster">
+          <i data-lucide="users"></i>
+          <h2>Área do Cliente</h2>
+          <p>Gerencie seus pedidos e preferências com transparência e praticidade.</p>
+          <button>Entrar</button>
+        </div>
+
+        <div class="poster">
+          <i data-lucide="headset"></i>
+          <h2>Suporte</h2>
+          <p>Atendimento humano e empático, 100% sustentável.</p>
+          <button>Falar</button>
+        </div>
+
+        <div class="poster">
+          <i data-lucide="shield-check"></i>
+          <h2>Segurança</h2>
+          <p>Criptografia verde e privacidade com eficiência energética.</p>
+          <button>Saiba Mais</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>© 2025 Ecobox — Da Cidade para o Mundo.</footer>
+    <script>lucide.createIcons();</script>
+  </body>
+  </html>

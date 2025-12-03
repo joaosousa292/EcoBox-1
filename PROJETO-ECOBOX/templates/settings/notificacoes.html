@@ -1,0 +1,246 @@
+{% extends "settings/base.html" %}
+{% block content %}
+
+<style>
+  .settings-section { padding: 28px; }
+  .notify-card {
+    background: linear-gradient(180deg, rgba(20,46,28,0.45), rgba(10,30,20,0.25));
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    max-width: 760px;
+    margin: 18px auto;
+  }
+  .notify-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .notify-row:last-child { border-bottom:none; }
+  .notify-label { font-weight:600; color:#dfffdc; max-width:70%; }
+  .small { color:#cfeccf; font-size:13px; margin-top:8px; }
+  .toggle { display:flex; align-items:center; gap:10px; }
+
+  /* switch */
+  .switch {
+    position:relative; width:46px; height:26px; border-radius:20px;
+    background:rgba(255,255,255,0.10); cursor:pointer;
+    transition:background .2s;
+  }
+  .switch.on { background:linear-gradient(90deg,var(--green-mid),var(--green-light)); }
+  .switch .dot {
+    position:absolute; top:3px; left:3px; width:20px; height:20px;
+    border-radius:50%; background:#fff; transition:.22s;
+  }
+  .switch.on .dot { left:23px; }
+
+  .btn {
+    background:var(--green-mid); color:#012; padding:8px 14px;
+    border:none; border-radius:8px; font-weight:700; cursor:pointer;
+  }
+  .btn.ghost { background:transparent; color:#cfeccf; border:1px solid rgba(255,255,255,0.2); }
+  .save-inline { display:flex; align-items:center; gap:12px; margin-top:14px; }
+
+  .toast-local {
+    position:fixed; right:30px; bottom:30px;
+    background:#28a745; color:#fff; padding:10px 14px;
+    border-radius:8px; display:none; z-index:99999;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    font-weight:700;
+  }
+</style>
+
+<div class="settings-section" id="notificacoes">
+  <div class="notify-card">
+
+    <h2 style="color:var(--green-light); margin-bottom:8px;">Notificações</h2>
+    <p class="small">Escolha quais notificações deseja receber.</p>
+
+    <div class="notify-row">
+      <div>
+        <div class="notify-label">Receber promoções</div>
+        <div class="small">Ofertas e novidades exclusivas.</div>
+      </div>
+      <div class="toggle">
+        <div id="receber_promocoes" class="switch" data-field="receber_promocoes"><div class="dot"></div></div>
+      </div>
+    </div>
+
+    <div class="notify-row">
+      <div>
+        <div class="notify-label">Atualizações de pedidos</div>
+        <div class="small">Envio, transporte e entrega.</div>
+      </div>
+      <div class="toggle">
+        <div id="notificacoes_pedido" class="switch" data-field="notificacoes_pedido"><div class="dot"></div></div>
+      </div>
+    </div>
+
+    <div class="notify-row">
+      <div>
+        <div class="notify-label">Alertas de segurança</div>
+        <div class="small">Avisos sobre logins e senhas.</div>
+      </div>
+      <div class="toggle">
+        <div id="alertas_seguranca" class="switch" data-field="alertas_seguranca"><div class="dot"></div></div>
+      </div>
+    </div>
+
+    <div class="save-inline">
+      <button id="salvarBtn" class="btn">Salvar agora</button>
+      <button id="resetBtn" class="btn ghost">Reverter</button>
+      <div style="flex:1"></div>
+      <div id="statusText" class="small"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast-local"></div>
+
+<script>
+
+///////////////////////////////////////////////////////////////
+// 1) RECEBENDO O OBJETO USER — 100% SEM ERRO
+///////////////////////////////////////////////////////////////
+const userObj = JSON.parse(`{{ user|tojson|safe if user is defined else '{}' }}`);
+///////////////////////////////////////////////////////////////
+// 2) Estado inicial
+///////////////////////////////////////////////////////////////
+const safe = v => (v === null || v === undefined) ? 0 : v;
+
+let initialState = {
+  receber_promocoes: safe(userObj.receber_promocoes),
+  notificacoes_pedido: safe(userObj.notificacoes_pedido),
+  alertas_seguranca: safe(userObj.alertas_seguranca)
+};
+
+let state = { ...initialState };
+
+///////////////////////////////////////////////////////////////
+// 3) Helpers
+///////////////////////////////////////////////////////////////
+function setVisual(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle("on", Boolean(val));
+  el.setAttribute("aria-checked", Boolean(val));
+}
+
+function applyInitialState() {
+  setVisual("receber_promocoes", state.receber_promocoes);
+  setVisual("notificacoes_pedido", state.notificacoes_pedido);
+  setVisual("alertas_seguranca", state.alertas_seguranca);
+}
+
+///////////////////////////////////////////////////////////////
+// 4) Inicialização
+///////////////////////////////////////////////////////////////
+document.addEventListener("DOMContentLoaded", () => {
+  applyInitialState();
+
+  document.querySelectorAll(".switch").forEach(sw => {
+    sw.addEventListener("click", () => {
+      const field = sw.dataset.field;
+      sw.classList.toggle("on");
+      state[field] = sw.classList.contains("on") ? 1 : 0;
+    });
+  });
+});
+
+///////////////////////////////////////////////////////////////
+// 5) Resetar
+///////////////////////////////////////////////////////////////
+document.getElementById("resetBtn").addEventListener("click", () => {
+  state = { ...initialState };
+  applyInitialState();
+  showToast("Revertido.");
+});
+
+///////////////////////////////////////////////////////////////
+// 6) Salvar via POST JSON
+///////////////////////////////////////////////////////////////
+document.getElementById("salvarBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("salvarBtn");
+  btn.disabled = true;
+  btn.textContent = "Salvando...";
+
+  const res = await fetch("{{ url_for('atualizar_notificacoes') }}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(state)
+  });
+
+  const data = await res.json().catch(()=>({}));
+
+  if (res.ok) {
+    initialState = { ...state };
+    showToast("Preferências salvas!");
+  } else {
+    showToast(data.error || "Erro ao salvar", true);
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Salvar agora";
+});
+
+///////////////////////////////////////////////////////////////
+// 7) Toast
+///////////////////////////////////////////////////////////////
+function showToast(msg, error=false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.background = error ? "#dc3545" : "#28a745";
+  t.style.display = "block";
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=> t.style.display="none", 2600);
+}
+
+document.getElementById("salvarBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("salvarBtn");
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = "Salvando...";
+
+  try {
+    const res = await fetch(saveUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state),
+      credentials: "same-origin" // garante cookies/session
+    });
+
+    let data = {};
+    try {
+      data = await res.json();
+    } catch (e) {
+      // resposta não JSON (improvável com jsonify), mas tratamos
+      data = {};
+    }
+
+    // Verifica tanto status HTTP quanto o campo data.ok retornado pelo servidor
+    if (!res.ok || data.ok !== true) {
+      const errMsg = data && (data.error || data.message) ? (data.error || data.message) : "Erro ao salvar";
+      showStatus(errMsg, 3000, true);
+      console.error("Salvar notificações - resposta:", res.status, data);
+    } else {
+      // sucesso
+      Object.assign(initialState, state);
+      showStatus(data.message || "Preferências salvas!", 2000);
+      console.log("Notificações salvas:", data.saved || data);
+    }
+  } catch (err) {
+    showStatus("Erro de rede ao salvar.", 3000, true);
+    console.error("Erro salvar notificações:", err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+});
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{# templates/settings/pagamentos_novo.html (cartão somente, compacto) #}
+{% extends "settings/base.html" %}
+{% block content %}
+<style>
+  :root{ --accent:#39d77a; --muted:#a7d9a7; }
+  .settings-section{ padding:18px 12px; }
+  .card-form{
+    max-width:760px; margin:18px auto; background:linear-gradient(180deg, rgba(6,28,18,0.86), rgba(5,20,14,0.9));
+    padding:18px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.55); color:var(--muted);
+  }
+  .hdr{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
+  .hdr h3{ margin:0; color:var(--accent); font-size:1.05rem; }
+  .sub{ color:rgba(234,255,234,0.22); font-size:0.88rem; margin-bottom:12px; }
+
+  .form-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .col{ flex:1 1 200px; min-width:140px; }
+  label{ display:block; font-size:0.82rem; color:#cfeccf; margin-bottom:6px; font-weight:600; }
+  input, select{
+    width:100%; padding:9px 10px; border-radius:10px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color:#eaffea; font-size:0.95rem;
+  }
+  input.card-number{ letter-spacing:1.8px; }
+  .checks{ display:flex; gap:14px; align-items:center; margin-top:8px; }
+  .checks label{ font-size:0.88rem; color:#cfeccf; display:flex; gap:8px; align-items:center; font-weight:600; }
+  .checks input{ width:16px; height:16px; accent-color:var(--accent); }
+  .actions{ display:flex; gap:10px; margin-top:12px; align-items:center; }
+  .btn{ padding:9px 12px; border-radius:10px; font-weight:700; border:none; cursor:pointer; }
+  .btn-primary{ background:linear-gradient(180deg,var(--accent),#2bb05f); color:#012; }
+  .btn-ghost{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03); }
+  .hint{ margin-top:10px; font-size:0.82rem; color:rgba(234,255,234,0.18); }
+  @media (max-width:720px){ .form-row{ flex-direction:column; } .hdr{ flex-direction:column; align-items:flex-start; gap:8px; } }
+</style>
+
+<div class="settings-section">
+  <div class="card-form" role="region" aria-label="Adicionar método de pagamento">
+    <div class="hdr">
+      <h3>Adicionar cartão</h3>
+      <div style="font-size:0.9rem; color:#bfe6bf;">Somente token (simulado)</div>
+    </div>
+
+    <div class="sub">Preencha os dados do cartão. Em produção, use SDK do PSP.</div>
+
+    <form id="novoMetodoForm" method="POST" action="{{ url_for('pagamentos_novo') }}">
+      <!-- forçamos o tipo aqui para evitar falha quando backend espera 'cartao' -->
+      <input type="hidden" name="pagamento" value="cartao">
+
+      <div class="form-row">
+        <div class="col">
+          <label for="nome">Nome no cartão</label>
+          <input id="nome" name="nome" type="text" required placeholder="Nome completo">
+        </div>
+      </div>
+
+      <div id="cartaoFields">
+        <div class="form-row">
+          <div class="col" style="flex:2;">
+            <label for="card_number">Número do cartão</label>
+            <input id="card_number" name="card_number" class="card-number"
+                   type="text" inputmode="numeric" placeholder="0000 0000 0000 0000">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col">
+            <label for="expiracao">Validade (MM/AA)</label>
+            <input id="expiracao" name="expiracao" type="text" placeholder="MM/AA">
+          </div>
+          <div class="col">
+            <label for="bandeira">Bandeira</label>
+            <input id="bandeira" name="bandeira" type="text" placeholder="Visa / Mastercard">
+          </div>
+          <div class="col">
+            <label for="cvv">CVC</label>
+            <input id="cvv" name="cvv" type="password" inputmode="numeric" placeholder="CVC">
+          </div>
+        </div>
+
+        <div class="checks">
+          <label><input type="checkbox" id="save_card" name="save_card" value="1"> Salvar cartão</label>
+          <label><input type="checkbox" id="save_card_padrao" name="save_card_padrao" value="1"> Definir como padrão</label>
+        </div>
+      </div>
+
+      <!-- ocultos necessários -->
+      <input type="hidden" name="psp_token" id="psp_token">
+      <input type="hidden" name="ultimos4" id="ultimos4">
+      <input type="hidden" name="bandeira_hidden" id="bandeira_hidden">
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Salvar cartão</button>
+        <a href="{{ url_for('pagamentos') }}" class="btn btn-ghost">Cancelar</a>
+      </div>
+
+      <div class="hint">Nunca armazene PAN/CVC no servidor. Apenas o PSP deve tratá-los.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // mascarar número do cartão + extrair últimos 4
+  const cardNumber = document.getElementById('card_number');
+  const ultimos4 = document.getElementById('ultimos4');
+  const token = document.getElementById('psp_token');
+  const bandeiraHidden = document.getElementById('bandeira_hidden');
+  const bandeiraField = document.getElementById('bandeira');
+
+  if(cardNumber){
+    cardNumber.addEventListener('input', e=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,19);
+      const p = [];
+      for(let i=0;i<v.length;i+=4) p.push(v.slice(i,i+4));
+      e.target.value = p.join(' ');
+      ultimos4.value = v.slice(-4);
+    });
+  }
+
+  // tokenização simulada no envio
+  document.getElementById('novoMetodoForm').addEventListener('submit', ()=>{
+    const u4 = (ultimos4.value || '0000').toString();
+    token.value = 'tok_demo_' + u4;
+    bandeiraHidden.value =
+      (bandeiraField && bandeiraField.value) ? bandeiraField.value :
+      (cardNumber && cardNumber.value && cardNumber.value.replace(/\s/g,'').startsWith('4') ? 'visa' :
+       (cardNumber && cardNumber.value && cardNumber.value.replace(/\s/g,'').startsWith('5') ? 'mastercard' : 'other'));
+    const cvv = document.getElementById('cvv');
+    if(cvv) cvv.value = ''; // não enviar CVC
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,244 @@
+-- Combined SQL file (portable version)
+-- Created from your dump on 2025-12-01
+
+CREATE DATABASE IF NOT EXISTS `ecobox` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `ecobox`;
+
+-- Table: admins
+DROP TABLE IF EXISTS `admins`;
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(120) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `admins` VALUES (1,'Administrador','admin@admin.com','admin123');
+
+-- Table: carrinho
+DROP TABLE IF EXISTS `carrinho`;
+CREATE TABLE `carrinho` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `usuario_id` int(11) NOT NULL,
+  `produto_id` int(11) NOT NULL,
+  `quantidade` int(11) DEFAULT 1,
+  `preco_unitario` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) GENERATED ALWAYS AS (`quantidade` * `preco_unitario`) STORED,
+  `data_adicionado` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  KEY `produto_id` (`produto_id`),
+  CONSTRAINT `carrinho_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `carrinho_ibfk_2` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `carrinho` (`id`, `usuario_id`, `produto_id`, `quantidade`, `preco_unitario`, `data_adicionado`) VALUES
+(9,1,3,3,129.90,'2025-12-01 03:38:40'),
+(14,13,4,1,64.90,'2025-12-01 16:12:43');
+
+-- Table: cliente
+DROP TABLE IF EXISTS `cliente`;
+CREATE TABLE `cliente` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `tipo` enum('cliente','admin') DEFAULT 'cliente',
+  `foto_usuario` varchar(255) DEFAULT 'static/img/padrao_foto.png',
+  `pais_regiao` varchar(5) DEFAULT 'br',
+  `horas_online` int(11) DEFAULT 0,
+  `receber_promocoes` tinyint(1) DEFAULT 1,
+  `notificacoes_pedido` tinyint(1) DEFAULT 1,
+  `alertas_seguranca` tinyint(1) DEFAULT 1,
+  `status` enum('ativo','inativo','bloqueado') DEFAULT 'ativo',
+  `total_gasto` decimal(12,2) DEFAULT 0.00,
+  `total_pedidos` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `cliente` VALUES
+(1,'JOAO PEDRO DE SOUSA','joao@gmail.com','<COLE_O_HASH_AQUI>','cliente','static/uploads/user_1_1764609274.jpeg','br',0,1,1,1,'inativo',1698.50,1),
+(3,'Samanta ','shizune.kt@gmail.com','scrypt:32768:8:1$pmmAPnrQUsQSTn5c$5cc7acdd79b7393a645c496c8448aa38d35ec877bb50947d7e2b19f4ea4d3101a88fc04d0941462d07e6bc4f7ba711cb6c9cdf3dd8a7ed3093ce3ab2ff2f1b21','cliente','/static/img/eu_e_a_laura.jfif','br',0,1,1,1,'ativo',1558.80,1),
+(6,'testes','teste@gmail.com','scrypt:32768:8:1$JpC8nTpesdlRd1r2$0f8e02e306bae7e9975762c8aa35382358e8a416fdf111b152fbf06d09233a98bc','cliente','static/uploads/user_6_1764575248.jpg','br',0,1,1,1,'ativo',0.00,0),
+(7,'oi','oi@gmail.com','scrypt:32768:8:1$JNeBraQmX1R3WRze$cb087c49698a915b08d5e8ceca02a1760a8e3c301d9ec406e08b70bffbb4f23f49','cliente','static/uploads/user_7_1764578389.png','br',0,1,1,1,'ativo',0.00,0),
+(8,'io','io@gmail.com','scrypt:32768:8:1$ibFnToCTuikt8WGs$207ce50f7d28cc43f6f8389d0325ca72503337557e6b5d0cb2925888ec312bb373270de28a32be96c30b322114c6431aa535e85754db2cd509ba833cfdb111d6','cliente','static/img/padrao_foto.png','br',0,1,1,1,'ativo',0.00,0),
+(9,'eu','eu@gmail.com','scrypt:32768:8:1$cM8cYbE68qI3jxW0$4b1a012f2ad1c8032b2176397851d2bd139b532c243d5e83646d6f16f6ae6e23196851599194da028b18c86a181b724cc94b7611accf4d0c0b9662fe790f40c8','cliente','static/img/padrao_foto.png','br',0,1,1,1,'ativo',0.00,0),
+(10,'vitor','vitor@gmail.com','scrypt:32768:8:1$WwQlswHZgGeOMyIX$419daa542742b3232deb405452d679e383e26c319d2a49cfb33e6d8e7892eb34db4fa6360296e0a015946ed91a3f261f03b2921349c87968294f267bdbd2cd07','cliente','static/img/padrao_foto.png','br',0,1,1,1,'ativo',0.00,0),
+(11,'ola','ola@gmail.com','ola123456789','cliente','static/img/padrao_foto.png','br',0,1,1,1,'ativo',0.00,0),
+(12,'pedro','pedro@gmail.com','87654321','cliente','static/uploads/user_12_1764609103.jpeg','br',0,1,1,1,'ativo',129.90,1),
+(13,'lala2','lala@gmail.com','lala','cliente','static/img/padrao_foto.png','br',0,0,0,0,'ativo',324.70,2);
+
+-- Table: cliente_historico
+DROP TABLE IF EXISTS `cliente_historico`;
+CREATE TABLE `cliente_historico` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cliente_id` int(11) NOT NULL,
+  `admin_id` int(11) DEFAULT NULL,
+  `acao` varchar(120) NOT NULL,
+  `detalhes` text DEFAULT NULL,
+  `ip_origem` varchar(50) DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  CONSTRAINT `cliente_historico_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `cliente_historico` VALUES
+(1,1,NULL,'compra_finalizada','Pedido #4 finalizado via checkout','127.0.0.1','{"pedido_id": 4, "total": 1698.5}','2025-12-01 00:54:52'),
+(2,3,NULL,'compra_finalizada','Pedido #5 finalizado via checkout','127.0.0.1','{"pedido_id": 5, "total": 1558.8}','2025-12-01 13:36:14'),
+(3,13,NULL,'solicitou_copia_dados',NULL,'127.0.0.1',NULL,'2025-12-01 15:34:30'),
+(4,13,NULL,'solicitou_copia_dados',NULL,'127.0.0.1',NULL,'2025-12-01 15:34:32'),
+(5,13,NULL,'solicitou_copia_dados',NULL,'127.0.0.1',NULL,'2025-12-01 15:51:22'),
+(6,13,NULL,'compra_finalizada','Pedido #6 finalizado via checkout','127.0.0.1','{"pedido_id": 6, "total": 129.9}','2025-12-01 16:08:40'),
+(7,13,NULL,'compra_finalizada','Pedido #7 finalizado via checkout','127.0.0.1','{"pedido_id": 7, "total": 194.8}','2025-12-01 16:12:12'),
+(8,12,NULL,'compra_finalizada','Pedido #8 finalizado via checkout','127.0.0.1','{"pedido_id": 8, "total": 129.9}','2025-12-01 16:15:26');
+
+-- Table: feedbacks
+DROP TABLE IF EXISTS `feedbacks`;
+CREATE TABLE `feedbacks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mensagem` text NOT NULL,
+  `data_envio` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `feedbacks` VALUES
+(1,'loja HORROROSA nunca mais compro nessa merda coisa mais horrivel do mundo','2025-11-30 21:18:50'),
+(2,'aa','2025-12-01 13:36:02');
+
+-- Table: metodo_pagamento
+DROP TABLE IF EXISTS `metodo_pagamento`;
+CREATE TABLE `metodo_pagamento` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cliente_id` int(11) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `bandeira` varchar(30) DEFAULT NULL,
+  `ultimos4` varchar(4) DEFAULT NULL,
+  `nome_titular` varchar(120) DEFAULT NULL,
+  `expiracao` varchar(7) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `eh_padrao` tinyint(1) DEFAULT 0,
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  CONSTRAINT `metodo_pagamento_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `metodo_pagamento` VALUES
+(1,13,'cartao','other','1111',NULL,'0190','tok_demo_1111',1,'2025-12-01 16:12:12'),
+(2,12,'cartao','other','3231',NULL,'2309','tok_demo_3231',0,'2025-12-01 16:15:26');
+
+-- Table: pedido_itens
+DROP TABLE IF EXISTS `pedido_itens`;
+CREATE TABLE `pedido_itens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pedido_id` int(11) DEFAULT NULL,
+  `produto_id` int(11) DEFAULT NULL,
+  `quantidade` int(11) DEFAULT NULL,
+  `preco_unitario` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `pedido_itens` VALUES
+(1,1,1,3,139.90),
+(2,2,2,2,90.90),
+(3,2,3,1,129.90),
+(4,2,4,3,64.90),
+(5,2,5,5,89.90),
+(6,3,4,1,64.90),
+(7,4,1,5,139.90),
+(8,4,6,1,999.00),
+(9,5,3,12,129.90),
+(10,6,3,1,129.90),
+(11,7,3,1,129.90),
+(12,7,4,1,64.90),
+(13,8,3,1,129.90);
+
+-- Table: pedidos
+DROP TABLE IF EXISTS `pedidos`;
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cliente_id` int(11) DEFAULT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
+  `data_` datetime DEFAULT NULL,
+  `status` enum('pendente','processando','enviado','entregue','cancelado') DEFAULT 'pendente',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `pedidos` VALUES
+(1,1,419.70,'2025-11-30 14:47:36','entregue'),
+(2,1,955.90,'2025-11-30 17:45:14','pendente'),
+(3,5,64.90,'2025-11-30 18:17:10','cancelado'),
+(4,1,1698.50,'2025-11-30 21:54:52','enviado'),
+(5,3,1558.80,'2025-12-01 10:36:14','pendente'),
+(6,13,129.90,'2025-12-01 13:08:40','pendente'),
+(7,13,194.80,'2025-12-01 13:12:12','pendente'),
+(8,12,129.90,'2025-12-01 13:15:26','pendente');
+
+-- Table: pedidos_cancelados
+DROP TABLE IF EXISTS `pedidos_cancelados`;
+CREATE TABLE `pedidos_cancelados` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pedido_id` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `cliente_nome` varchar(150) DEFAULT NULL,
+  `cliente_email` varchar(150) DEFAULT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
+  `status_antigo` varchar(50) DEFAULT NULL,
+  `data_pedido` datetime DEFAULT NULL,
+  `data_cancelado` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- (no inserts for pedidos_cancelados in dump)
+
+-- Table: produtos
+DROP TABLE IF EXISTS `produtos`;
+CREATE TABLE `produtos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `preco` decimal(10,2) NOT NULL,
+  `imagem` varchar(255) DEFAULT 'static/img/default.png',
+  `estoque` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `produtos` VALUES
+(1,'EcoBox Pro','Modelo de alta resistência da EcoBox, ideal para uso comercial em feiras, lojas ou para transporte de cargas mais pesadas, na cor cinza grafite.',139.90,'ecobox_pro_cinza_grafite.png',12),
+(2,'Caixa de Bambu','Caixa super sustentável e reutilizável',90.90,'produto1.png',13),
+(3,'Caixa Premium','Caixa tradicional Reforçada de mais qualidade',129.90,'produto_premium.png',9),
+(4,'EcoBox Mini','Versão compacta da EcoBox, perfeita para pequenos espaços, carros ou escritórios, na elegante cor verde oliva.',64.90,'ecobox_mini.png',25),
+(5,'EcoBox Original','A caixa multifuncional dobrável feita de plástico reciclado e bambu, ideal para organizar, transportar e como assento ou mesa.',89.90,'ecobox_original.png',45),
+(6,'Joao','Lindo',999.00,'WhatsApp_Image_2025-11-17_at_23.47.23.jpeg',0),
+(7,'Joao','asdads',1312.00,'eu_e_a_laura.jfif',123);
+
+-- Table: reset_senha
+DROP TABLE IF EXISTS `reset_senha`;
+CREATE TABLE `reset_senha` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expira_em` datetime NOT NULL,
+  `usado` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `reset_senha_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `reset_senha` VALUES
+(1,1,'yRVMg1w1pzjka1QtGId_yNXTlxJ2By_iIc2yCrD6O_s','2025-12-01 03:26:36',0),
+(2,1,'5t6R4T4gbC6NgfFsG5IT4WcwZO_vXlpxnzkmHZW1VhA','2025-12-01 03:28:35',0),
+(3,1,'krRPfoGdOFS28PBHxKR7awwMHJp7YJPeDvKl7Mx5qdk','2025-12-01 03:32:06',0),
+(4,1,'lEOn7aGdzcY5j3IgyLCIq4WgIWqhVYs1BdfHGsRgOZ4','2025-12-01 03:33:11',0),
+(5,1,'QkhVbil_lyFz3HDTg-ppWbsJrYy52fWGGFg0VS1OGP8','2025-12-01 12:52:40',0),
+(6,1,'tiR0G1U-sG8p9kNZpic-dioxvzqXLuel29QhyGBYIKk','2025-12-01 13:17:05',0),
+(7,6,'SGhIQyusWDKIYyBrjWE0oPRY9dZXcqfi4_vLuf4Vfos','2025-12-01 13:17:22',0),
+(8,1,'s3dqVQaH8Qob2uXjnU0UQ5_eMoWBKBDMOkc7i86cBx8','2025-12-01 13:18:25',0),
+(9,1,'4IHJJRZ1VI5xwUgA4WTQtb8SBqfHe5NPmp4UUUClszs','2025-12-01 13:19:01',0);
+
+-- End of SQL

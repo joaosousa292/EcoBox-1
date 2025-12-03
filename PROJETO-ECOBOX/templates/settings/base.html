@@ -1,0 +1,483 @@
+{# templates/settings/base.html - base template for settings pages #}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}EcoBox — Configurações{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* --- Copiado do visual existente (cores, header, sidebar, layout) --- */
+    :root{ --bg1:#0d2b1d; --bg2:#1c140a; --muted:rgba(255,255,255,0.1); --green-light:#65ff7a; --green-mid:#3fbf66; --green-dark:#1a512d; --brown-dark:#1c140a; }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Poppins",sans-serif}
+    body{background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    header{width:100%;position:sticky;top:0;z-index:50;background:rgba(13,43,29,0.9);padding:18px 56px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 30px rgba(0,0,0,0.35);backdrop-filter:blur(6px)}
+    nav{display:flex;gap:50px;justify-content:center;align-items:center;position:relative}
+    nav a{color:#c8ffb8;text-decoration:none;font-weight:600;display:flex;gap:8px;align-items:center;padding-bottom:6px}
+
+    main{flex:1;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
+    .settings-header{width:100%;max-width:1000px;margin-bottom:40px;text-align:left}
+    .settings-header h1{font-size:42px;font-weight:700;background:linear-gradient(90deg,var(--green-light),#d6ffb2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    .settings-layout{display:flex;width:100%;max-width:1000px;background:rgba(30,60,40,0.4);border-radius:20px;backdrop-filter:blur(8px);min-height:600px;overflow:hidden}
+    .sidebar{width: 280px; min-width: 280px;padding:30px 0;background:rgba(13,43,29,0.7);border-right:1px solid var(--muted)}
+    .sidebar a{display:flex;align-items:center;gap:12px;padding:15px 30px;text-decoration:none;color:#c8ffb8;font-weight:600;transition:background .3s,color .3s;cursor:pointer}
+    .sidebar a:hover{background:rgba(63,191,102,0.2);color:#a5ff77}
+    .sidebar a.active{background:rgba(63,191,102,0.3);border-left: none; padding-left: 30px !important;position: absolute}
+
+    .settings-content{flex: 1 1 auto; min-width: 0;}
+    .settings-section h2{font-size:28px;color:var(--green-light);margin-bottom:25px;padding-bottom:10px;border-bottom:1px dashed var(--muted)}
+
+    /* user menu / avatar in header */
+    .user-menu{position:absolute;top:50%;left:20px;transform:translateY(-50%);z-index:200}
+    .user-wrapper{display:flex;align-items:center;gap:10px;cursor:pointer}
+    .user-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #ffffffcc;background:#fff}
+    .user-preview{display:flex;flex-direction:column;line-height:1.2}
+    .user-name{font-size:15px;font-weight:600;color:#fff}
+    .user-email{font-size:12px;color:#eee}
+
+    footer{text-align:center;padding:22px;color:#d3f5d8;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.08))}
+
+    /* small screens */
+    @media (max-width:900px){.settings-layout{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--muted)} }
+      
+  .floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+/* estilos para flashes no painel de configurações */
+.settings-flashes { margin-bottom: 16px; }
+.settings-flash-item {
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* variações por categoria */
+.flash-container {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    z-index: 999999;
+  }
+
+  .flash-msg {
+    padding: 14px 22px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: slideIn .4s ease-out, fadeOut 1s ease 4s forwards;
+  }
+
+  .flash-msg.sucesso,
+  .flash-msg.sucesso_cadastro {
+    background: #28a745;
+  }
+
+  .flash-msg.erro,
+  .flash-msg.erro_login,
+  .flash-msg.erro_cadastro {
+    background: #dc3545;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(30px); }
+  }
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+
+
+  <nav>
+    <a href="/" class="active"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+  <main>
+    <section class="settings-header">
+      <h1>⚙️ Configurações da Conta</h1>
+    </section>
+
+    <div class="settings-layout">
+      <aside class="sidebar">
+        <a href="/perfil"><i data-lucide="user"></i> Perfil e Dados</a>
+        <a href="/seguranca"><i data-lucide="lock"></i> Segurança e Senha</a>
+        <a href="/notificacoes"><i data-lucide="bell"></i> Notificações</a>
+        <a href="/privacidade"><i data-lucide="eye-off"></i> Privacidade</a>
+        <a href="/pagamentos"><i data-lucide="credit-card"></i> Formas de Pagamento</a>
+      </aside>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+      <div class="flash-msg {{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<style>
+  .flash-container {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    z-index: 999999;
+  }
+
+  .flash-msg {
+    padding: 14px 22px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: slideIn .4s ease-out, fadeOut 1s ease 4s forwards;
+  }
+
+  .flash-msg.sucesso,
+  .flash-msg.sucesso_cadastro {
+    background: #28a745;
+  }
+
+  .flash-msg.erro,
+  .flash-msg.erro_login,
+  .flash-msg.erro_cadastro {
+    background: #dc3545;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(30px); }
+  }
+
+</style>
+
+  {# Aqui as páginas filhas injetam seu conteúdo #}
+  {% block content %}{% endblock %}
+
+</section>
+
+    </div>
+  </main>
+
+  <footer>© 2025 EcoBox — Tecnologia Sustentável.</footer>
+
+  <script>
+    lucide.createIcons();
+    function toggleUserMenu(){
+      const dropdown=document.getElementById('userDropdown');
+      dropdown.classList.toggle('show');
+    }
+    window.onclick=function(e){ if(!e.target.closest('.user-menu')){ document.getElementById('userDropdown').classList.remove('show'); }}
+  </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function(){
+  function activateFromHash() {
+    const hash = (location.hash || '#perfil').replace('#','');
+    // remove active de links e sections
+    document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));
+    document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active-tab'));
+    // ativa o link com data-tab ou href que contenha o hash
+    const link = Array.from(document.querySelectorAll('.sidebar a'))
+                     .find(a => (a.getAttribute('data-tab')===hash) || a.getAttribute('href')?.includes('#'+hash));
+    if (link) link.classList.add('active');
+    const sec = document.getElementById(hash);
+    if (sec) sec.classList.add('active-tab');
+  }
+
+  // ativa no load
+  activateFromHash();
+
+  // se o usuário clicar no link e o endereço mudar sem reload
+  window.addEventListener('hashchange', activateFromHash);
+});
+</script>
+</body>
+</html>

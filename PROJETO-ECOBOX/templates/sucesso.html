@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Pedido Concluído — EcoBox</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{
+      --bg: #f3fbf6;
+      --card:#ffffff;
+      --prim:#0a3627; /* cor-primaria */
+      --accent:#0bb07b; /* cor-acento */
+      --muted:#6b7a6f;
+      --success:#28a745;
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);margin:0;color:#213529;-webkit-font-smoothing:antialiased}
+
+    .container{max-width:1100px;margin:40px auto;padding:20px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:0 18px 50px rgba(6,30,18,0.08);overflow:hidden;border-top:6px solid var(--accent)}
+
+    .row{display:flex;gap:24px}
+    .col-left{flex:1 1 60%;padding:36px}
+    .col-right{width:360px;padding:34px;background:linear-gradient(180deg,rgba(15,50,32,0.02),transparent)}
+
+    @media(max-width:980px){.row{flex-direction:column}.col-right{width:100%}}
+
+    .ok-badge{display:flex;align-items:center;gap:14px}
+    .ok-badge .icon{width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,var(--accent),#2bb05f);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(36,150,86,0.18)}
+    .ok-badge h1{margin:0;font-size:1.6rem;color:var(--prim)}
+    .subtitle{color:var(--muted);margin-top:6px}
+
+    .details{margin-top:18px;padding:18px;background:#f6fff8;border-left:4px solid var(--accent);border-radius:10px;color:#0b3b27}
+    .details p{margin:6px 0;font-size:0.98rem}
+    .detail-key{color:var(--muted);font-weight:600;margin-right:8px}
+
+    .items{margin-top:22px}
+    .item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f3f0}
+    .item .title{font-weight:600;max-width:65%}
+    .item small{color:var(--muted)}
+
+    .total{display:flex;justify-content:space-between;align-items:center;padding-top:14px;margin-top:14px;border-top:2px dashed #eef6ee}
+    .total .lbl{font-weight:700;color:var(--prim);font-size:1.25rem}
+
+    .actions{margin-top:18px;display:flex;gap:12px}
+    .btn{padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+    .btn-primary{background:var(--accent);color:#012;border:none}
+    .btn-ghost{background:transparent;border:1px solid rgba(6,30,18,0.06);color:var(--prim)}
+
+    /* right panel */
+    .summary-title{font-weight:700;color:var(--prim);margin-bottom:8px}
+    .summary-box{background:#fff;padding:14px;border-radius:10px;border:1px solid rgba(6,30,18,0.04)}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+    .muted{color:var(--muted)}
+    .big-amount{font-weight:900;font-size:1.6rem;color:var(--prim)}
+
+    .small{font-size:0.92rem;color:var(--muted)}
+
+    /* responsive tweaks */
+    @media(max-width:600px){.ok-badge .icon{width:48px;height:48px}.col-left{padding:20px}.col-right{padding:18px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="row">
+
+        <div class="col-left">
+          <div class="ok-badge">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#012" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <div>
+              <h1>Pedido Finalizado com Sucesso!</h1>
+              <div class="subtitle">Obrigado pela compra — veja abaixo os detalhes do seu pedido e as próximas etapas.</div>
+            </div>
+          </div>
+
+          <!-- Picking data source (pedido / display / checkout) -->
+          {% set src = None %}
+          {% if pedido is defined and pedido %}
+            {% set src = pedido %}
+          {% elif display is defined and display %}
+            {% set src = display %}
+          {% elif checkout is defined and checkout %}
+            {% set src = checkout %}
+          {% endif %}
+
+          <div class="details" aria-live="polite">
+            <p><span class="detail-key">Número:</span>
+              {% if pedido is defined and pedido.id %}#{{ pedido.id }}
+              {% elif pedido_id is defined %}#{{ pedido_id }}
+              {% elif display is defined and (display.pedido_id or display.id) %}#{{ display.pedido_id or display.id }}
+              {% else %}
+                —
+              {% endif %}
+            </p>
+
+            <p><span class="detail-key">Cliente:</span> {{ (src.nome if src is not none and (src.nome is defined or src.get is defined) else (src.nome if src is not none else '')) or '—' }}</p>
+
+            {# telefone: tenta varias fontes #}
+            {% set telefone = (src.telefone if src is not none and (src.telefone is defined or src.get is defined) else (src.telefone if src is not none else '')) or '' %}
+            {% if not telefone and checkout is defined and checkout.telefone %}
+              {% set telefone = checkout.telefone %}
+            {% endif %}
+            {% if not telefone and display is defined and display.telefone %}
+              {% set telefone = display.telefone %}
+            {% endif %}
+
+            <p><span class="detail-key">Telefone:</span> {{ telefone or '—' }}</p>
+
+            {# endereco/cep #}
+            {% set endereco = (src.endereco if src is not none and (src.endereco is defined or src.get is defined) else (src.endereco if src is not none else '')) or '' %}
+            {% set cep = (src.cep if src is not none and (src.cep is defined or src.get is defined) else (src.cep if src is not none else '')) or '' %}
+            <p><span class="detail-key">Endereço:</span> {{ endereco or '—' }} {% if cep %} — CEP {{ cep }}{% endif %}</p>
+
+            <p><span class="detail-key">Forma de pagamento:</span> {{ ((src.pagamento if src is not none and (src.pagamento is defined or src.get is defined) else (src.pagamento if src is not none else '')) or '—')|capitalize }}</p>
+
+            {% if pedido is defined and pedido.data_ %}
+              <p class="small"><span class="detail-key">Data do pedido:</span> {{ pedido.data_ }}</p>
+            {% endif %}
+          </div>
+
+          <div class="items">
+            <h3 class="section">Resumo do pedido</h3>
+            {% if itens is defined and itens %}
+              {% for item in itens %}
+                <div class="item">
+                  <div>
+                    <div class="title">{{ item.nome }}</div>
+                    <div class="small">{{ (item.quantidade or item.qtd or 0) }} × R$ {{ "%.2f"|format(item.preco_unitario if item.preco_unitario is defined else (item.preco if item.preco is defined else 0)) }}</div>
+                  </div>
+                  <div style="font-weight:800">R$ {{ "%.2f"|format((item.quantidade or item.qtd or 0) * (item.preco_unitario if item.preco_unitario is defined else (item.preco if item.preco is defined else 0))) }}</div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="item"><div class="small">Itens do pedido não disponíveis.</div></div>
+            {% endif %}
+
+            <div class="total">
+              <div class="lbl">Total</div>
+              <div class="lbl">R$ 
+                {% if pedido is defined and pedido.total is defined %}
+                  {{ "%.2f"|format(pedido.total) }}
+                {% elif display is defined and display.total is defined %}
+                  {{ "%.2f"|format(display.total) }}
+                {% elif checkout is defined and checkout.total is defined %}
+                  {{ "%.2f"|format(checkout.total) }}
+                {% elif total is defined %}
+                  {{ "%.2f"|format(total) }}
+                {% else %}
+                  —
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="actions">
+              <a href="{{ url_for('loja') }}" class="btn btn-primary">Continuar comprando</a>
+              <a href="{{ url_for('pagamentos') }}" class="btn btn-ghost">Ver métodos de pagamento</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-right">
+          <div class="summary-title">Confirmação</div>
+          <div class="summary-box">
+            <div class="summary-row"><div class="small">Número do pedido</div><div>#{{ pedido.id if pedido is defined and pedido.id else (pedido_id if pedido_id is defined else (display.pedido_id if display is defined and display.pedido_id else '—')) }}</div></div>
+            <div class="summary-row"><div class="small">Itens</div><div>{{ itens|length if itens is defined else 0 }}</div></div>
+            <div class="summary-row"><div class="small">Total</div><div class="big-amount">R$ {{ "%.2f"|format(pedido.total if pedido is defined and pedido.total is defined else (display.total if display is defined and display.total is defined else (checkout.total if checkout is defined and checkout.total is defined else (total if total is defined else 0)))) }}</div></div>
+            <div style="margin-top:12px" class="small">Enviaremos um e-mail com confirmação e dados de rastreamento quando o pedido for enviado.</div>
+          </div>
+
+          <div style="margin-top:18px" class="small">Suporte: suporte@ecobox.example • +55 47 99999-9999</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

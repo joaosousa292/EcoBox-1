@@ -1,0 +1,52 @@
+<aside class="sidebar" id="adminSidebar">
+  <div class="brand">
+    <div class="logo">EB</div>
+    <div>
+      <div class="fw-bold text-uppercase">EcoBox Admin</div>
+      <div class="muted">Painel de Controle</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <nav class="d-flex flex-column mt-2">
+    <a class="nav-link-custom {% if active == 'estatisticas' %}active{% endif %}" href="/admin/estatisticas"><i data-lucide="bar-chart-3"></i> Estatísticas</a>
+    <a class="nav-link-custom {% if active == 'produtos' %}active{% endif %}" href="/admin/produtos"><i data-lucide="package"></i> Produtos</a>
+    <a class="nav-link-custom {% if active == 'pedidos' %}active{% endif %}" href="/admin/pedidos"><i data-lucide="receipt"></i> Pedidos</a>
+    <a class="nav-link-custom {% if active == 'clientes' %}active{% endif %}" href="/admin/clientes"><i data-lucide="users"></i> Clientes</a>
+  </nav>
+
+  <hr>
+
+  <div class="mt-auto">
+    <a href="/admin/logout" class="nav-link-custom"><i data-lucide="log-out"></i> Sair</a>
+  </div>
+</aside>
+
+<style>
+/* Copiar/colar o CSS do seu sidebar (ajustado para incluir posição fixa) */
+.sidebar{
+  width:260px;
+  background:#0d2b1d;
+  min-height:100vh;
+  padding:25px 18px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  left:0; top:0; z-index:60;
+  box-shadow:6px 0 24px rgba(6,20,12,0.08);
+}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#32c77b,#1ea56a);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042418;font-size:18px}
+.nav-link-custom{color:#dbeee2;padding:10px 12px;border-radius:10px;display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600}
+.nav-link-custom:hover{background:rgba(255,255,255,0.06);transform:translateX(6px);color:#fff}
+.nav-link-custom.active{background:rgba(255,255,255,0.06);border-left:4px solid #32c77b;color:#fff;padding-left:10px}
+.sidebar hr{border-color:rgba(255,255,255,0.06);margin:14px 0}
+.muted{color:rgba(255,255,255,0.75);font-size:12px}
+@media(max-width:900px){.sidebar{transform:translateX(-320px);transition:transform .22s ease}.sidebar.open{transform:translateX(0)}}
+</style>
+
+<script>
+function toggleAdminSidebar(){ document.getElementById('adminSidebar')?.classList.toggle('open'); }
+</script>

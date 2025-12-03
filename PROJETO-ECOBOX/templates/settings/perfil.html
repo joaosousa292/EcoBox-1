@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EcoBox — Configurações</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg1: #0d2b1d; /* verde escuro */
+            --bg2: #1c140a; /* marrom escuro */
+            --muted: rgba(255, 255, 255, 0.1);
+            --green-light: #65ff7a;
+            --green-mid: #3fbf66;
+            --green-dark: #1a512d;
+            --brown-dark: #1c140a; /* Usado no botão "Solicitar Cópia" */
+        }
+
+        * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
+        body {
+            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        header {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(13, 43, 29, 0.9);
+            padding: 18px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+        }
+
+        nav {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        nav a {
+            position: relative;
+            color: #c8ffb8;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding-bottom: 6px;
+        }
+
+        nav a:hover {
+            color: #a5ff77;
+            transform: translateY(-2px);
+        }
+
+        nav a.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 100%;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+            box-shadow: 0 0 10px rgba(101, 255, 122, 0.7);
+            animation: glowline 1.6s ease-in-out infinite alternate;
+        }
+
+        nav i[data-lucide] {width: 18px; height: 18px;}
+
+        @keyframes glowline {
+            from {opacity: 0.7; box-shadow: 0 0 6px rgba(101, 255, 122, 0.4);}
+            to {opacity: 1; box-shadow: 0 0 14px rgba(101, 255, 122, 0.9);}
+        }
+
+        /* ---------------------- ESTILOS DE CONFIGURAÇÕES ---------------------- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+        }
+
+        .settings-header {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .settings-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--green-light), #d6ffb2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .settings-layout {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(30, 60, 40, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            width: 280px;
+            padding: 30px 0;
+            background: rgba(13, 43, 29, 0.7); 
+            border-right: 1px solid var(--muted);
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 30px;
+            text-decoration: none;
+            color: #c8ffb8;
+            font-weight: 600;
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer; 
+        }
+
+        .sidebar a i[data-lucide] {
+            width: 20px;
+            height: 20px;
+            color: var(--green-light);
+        }
+
+        .sidebar a:hover {
+            background: rgba(63, 191, 102, 0.2);
+            color: #a5ff77;
+        }
+
+        .sidebar a.active {
+            background: rgba(63, 191, 102, 0.3);
+            border-left: 4px solid var(--green-light);
+            padding-left: 26px;
+        }
+
+        /* Conteúdo Principal */
+        .settings-content {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active-tab {
+            display: block;
+        }
+
+        .settings-section h2 {
+            font-size: 28px;
+            color: var(--green-light);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--muted);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item span {
+            font-size: 16px;
+            color: #e3ffe8;
+        }
+        
+
+        input[type="text"], input[type="email"], input[type="password"], select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--green-mid);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            width: 250px;
+        }
+
+
+        input[type="checkbox"] {
+            width: 20px !important;
+            height: 20px;
+        }
+
+
+        .save-button {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            font-size: 16px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 30px;
+        }
+
+        .save-button:hover {
+            background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #d3f5d8;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.08));
+        }
+
+        .floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+/* ===== estilos para foto de perfil (mais polido) ===== */
+.photo-row {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    justify-content: flex-start !important; /* garante alinhamento à esquerda */
+}
+
+.photo-preview {
+  width: 120px !important;   /* antes era 96px → agora 120px */
+  height: 120px !important;
+  border-radius: 50%;        /* deixa ela redonda */
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(101,255,122,0.15), rgba(63,191,102,0.10));
+  padding: 4px;
+  box-shadow: 0 8px 22px rgba(10, 40, 20, 0.45), inset 0 1px 0 rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* coluna com controles */
+.photo-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+/* input file estilizado via label */
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(63,191,102,0.18), rgba(101,255,122,0.08));
+  color: #083116;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(63,191,102,0.18);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.file-label:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(32,120,60,0.12); }
+.file-input-hidden { display: none; }
+
+/* ações secundárias: remover + aviso */
+.photo-actions {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:6px;
+}
+.btn-remove {
+  background:#c94a48;
+  color:white;
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  font-weight:700;
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  cursor:pointer;
+}
+.btn-remove:hover { transform: translateY(-2px); box-shadow:0 8px 18px rgba(201,74,72,0.12); }
+
+.photo-note {
+  font-size:13px;
+  color: #cfeccf;
+}
+
+/* small screen */
+@media (max-width:720px){
+  .photo-row{ flex-direction:column; align-items:flex-start; }
+  .photo-controls{ min-width: auto; width:100%; }
+}
+
+
+    </style>
+</head>
+
+<body>
+    <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/configuracoes">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+
+
+  <nav>
+    <a href="/site"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+      <div class="flash-msg {{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<style>
+  .flash-container {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    z-index: 999999;
+  }
+
+  .flash-msg {
+    padding: 14px 22px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: slideIn .4s ease-out, fadeOut 1s ease 4s forwards;
+  }
+
+  .flash-msg.sucesso,
+  .flash-msg.sucesso_cadastro {
+    background: #28a745;
+  }
+
+  .flash-msg.erro,
+  .flash-msg.erro_login,
+  .flash-msg.erro_cadastro {
+    background: #dc3545;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(30px); }
+  }
+
+</style>
+<section class="settings-header">
+      <h1>⚙️ Configurações da Conta</h1>
+    </section>
+        <div class="settings-layout">
+            <aside class="sidebar">
+                <a href="/perfil"><i data-lucide="user"></i> Perfil e Dados</a>
+                <a href="/seguranca"><i data-lucide="lock"></i> Segurança e Senha</a>
+                <a href="/notificacoes"><i data-lucide="bell"></i> Notificações</a>
+                <a href="/privacidade"><i data-lucide="eye-off"></i> Privacidade</a>
+                <a href="/pagamentos"><i data-lucide="credit-card"></i> Formas de Pagamento</a>
+            </aside>
+
+            <section class="settings-content">
+                
+                <div id="perfil" class="settings-section active-tab">
+    <h2>Seus Dados Pessoais</h2>
+
+    <form id="perfilForm" method="post" action="{{ url_for('perfil') }}" enctype="multipart/form-data">
+      <div class="settings-item">
+          <span>Nome de Usuário</span>
+          <input type="text" name="nome" value="{{ user.nome }}">
+      </div>
+
+      <div class="settings-item">
+          <span>E-mail</span>
+          <input type="email" name="email" value="{{ user.email }}">
+      </div>
+
+      <div class="settings-item">
+          <span>Localização (País/Região)</span>
+          <select name="pais_regiao">
+              <option value="br" {% if user.pais_regiao=='br' %}selected{% endif %}>Brasil</option>
+              <option value="pt" {% if user.pais_regiao=='pt' %}selected{% endif %}>Portugal</option>
+              <option value="us" {% if user.pais_regiao=='us' %}selected{% endif %}>United States</option>
+          </select>
+      </div>
+
+      <!-- FOTO DE PERFIL: substitua a sua seção atual por este bloco -->
+<div class="settings-item" style="align-items:flex-start; padding-top:8px;">
+  <span style="min-width:220px; align-self:center;">Foto de Perfil</span>
+
+  <div style="flex:1;">
+    <div class="photo-row">
+      <div class="photo-preview" aria-hidden="true">
+        {% if user.foto_usuario %}
+          <img id="perfilPhotoPreview" src="{{ url_for('static', filename=user.foto_usuario.replace('static/', '') ) }}" alt="Foto do usuário">
+        {% else %}
+          <img id="perfilPhotoPreview" src="{{ url_for('static', filename='img/padrao_foto.png') }}" alt="Foto padrão">
+        {% endif %}
+      </div>
+
+      <div class="photo-controls">
+        <!-- label estilizado que abre o file picker -->
+        <label class="file-label" for="fotoInput">
+          <i data-lucide="image" style="width:18px;height:18px"></i>
+          Escolher foto
+        </label>
+        <input id="fotoInput" class="file-input-hidden" type="file" name="foto" accept="image/*">
+
+        <div class="photo-actions">
+          <button id="removerFotoBtn" type="button" class="btn-remove" title="Remover foto atual">
+            <i data-lucide="trash-2" style="width:14px;height:14px"></i> Remover
+          </button>
+
+          <div style="margin-left:6px;">
+            <div class="photo-note">Tamanho máximo recomendado: <strong>2-4MB</strong>. Tipos: <strong>jpg, png, webp</strong>.</div>
+            <small id="previewNotice" class="photo-note" style="display:none;">Preview local — clique em <strong>Salvar alterações</strong> para confirmar.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  lucide.createIcons(); // garante os ícones atualizados
+  const input = document.getElementById('fotoInput');
+  const preview = document.getElementById('perfilPhotoPreview');
+  const remover = document.getElementById('removerFotoBtn');
+  const notice = document.getElementById('previewNotice');
+
+  const defaultUrl = "{{ url_for('static', filename='img/padrao_foto.png') }}";
+
+  // atualiza header/avatar se houver
+  function updateTopAvatars(src){
+    const topAvatar = document.querySelector('.user-avatar');
+    const dropAvatar = document.querySelector('.dropdown-avatar');
+    if (topAvatar) topAvatar.src = src;
+    if (dropAvatar) dropAvatar.src = src;
+  }
+
+  input.addEventListener('change', function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecione um arquivo de imagem.');
+      this.value = '';
+      return;
+    }
+    const maxMB = 4;
+    if (file.size > maxMB * 1024 * 1024) {
+      alert('A imagem é muito grande. Máximo: ' + maxMB + 'MB');
+      this.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      preview.src = ev.target.result;
+      updateTopAvatars(ev.target.result);
+      if (notice) notice.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  remover.addEventListener('click', function () {
+    if (!confirm("Deseja realmente remover a foto atual? (Não será removida até você salvar)")) return;
+    // apenas limpa seleção e mostra padrão localmente
+    input.value = '';
+    preview.src = defaultUrl;
+    updateTopAvatars(defaultUrl);
+    if (notice) {
+      notice.textContent = "Removida localmente. Clique em Salvar alterações para confirmar.";
+      notice.style.display = 'block';
+    }
+    // para sinalizar ao servidor que o usuário quer remover, você poderia criar um hidden input:
+    // if (!document.getElementById('remover_foto_flag')) {
+    //   const h = document.createElement('input'); h.type='hidden'; h.name='remover_foto'; h.id='remover_foto_flag'; h.value='1';
+    //   document.getElementById('perfilForm').appendChild(h);
+    // }
+  });
+
+})();
+</script>
+
+
+
+      <div style="padding-top:18px">
+        <button type="submit" class="save-button"><i data-lucide="save" style="width: 16px; height: 16px; margin-right: 5px;"></i> Salvar Alterações</button>
+      </div>
+    </form>
+</div>
+
+                
+                <div id="seguranca" class="settings-section">
+                    <h2>Segurança e Acesso</h2>
+                    
+                    <div class="settings-item">
+                        <span>Senha Atual</span>
+                        <input type="password" placeholder="Digite sua senha atual">
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Nova Senha</span>
+                        <input type="password" placeholder="Nova senha (mínimo 8 caracteres)">
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Confirme a Nova Senha</span>
+                        <input type="password" placeholder="Confirme a nova senha">
+                    </div>
+
+                    <button class="save-button"><i data-lucide="lock" style="width: 16px; height: 16px; margin-right: 5px;"></i> Atualizar Senha</button>
+                </div>
+
+                <div id="notificacoes" class="settings-section">
+                    <h2>Preferências de Notificação</h2>
+                    
+                    <div class="settings-item">
+                        <span>E-mails sobre Promoções e Novidades</span>
+                        <input type="checkbox" checked>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Notificações de Status do Pedido (E-mail)</span>
+                        <input type="checkbox" checked>
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Alertas de Segurança (SMS/E-mail)</span>
+                        <input type="checkbox" checked>
+                    </div>
+
+                    <button class="save-button"><i data-lucide="save" style="width: 16px; height: 16px; margin-right: 5px;"></i> Salvar Preferências</button>
+                </div>
+                
+                <div id="privacidade" class="settings-section">
+                    <h2>Controle de Privacidade e Dados</h2>
+                    
+                    <div class="settings-item">
+                        <span>Permitir o uso de dados anônimos para melhoria do serviço</span>
+                        <input type="checkbox" checked>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Exibir meu nome de usuário em avaliações de produtos (se houver)</span>
+                        <input type="checkbox">
+                    </div>
+
+                    <div class="settings-item">
+                        <span>Solicitar uma cópia de todos os meus dados (LGPD)</span>
+                        <button class="save-button" style="background: var(--brown-dark);"><i data-lucide="download" style="width: 16px; height: 16px; margin-right: 5px;"></i> Solicitar Cópia</button>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <span>Desejo excluir minha conta permanentemente</span>
+                        <button class="save-button" style="background: #a82424;"><i data-lucide="trash-2" style="width: 16px; height: 16px; margin-right: 5px;"></i> Excluir Conta</button>
+                    </div>
+                </div>
+                
+                <div id="pagamento" class="settings-section">
+                    <h2>Formas de Pagamento Salvas</h2>
+                    <p style="color: #c8ffb8; margin-top: 20px;">Nenhuma forma de pagamento salva. Adicione um novo cartão ou método de pagamento.</p>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <footer>© 2025 EcoBox — Tecnologia Sustentável.</footer>
+    
+    <script>
+        lucide.createIcons();
+        (function(){
+  const input = document.getElementById('fotoInput');
+  const preview = document.getElementById('perfilPhotoPreview');
+  const remover = document.getElementById('removerFotoBtn');
+  const notice = document.getElementById('previewNotice');
+  const form = document.getElementById('perfilForm');
+  const defaultUrl = "{{ url_for('static', filename='img/padrao_foto.png') }}";
+
+  function ensureHiddenFlag() {
+    let h = document.getElementById('remover_foto_flag');
+    if (!h) {
+      h = document.createElement('input');
+      h.type = 'hidden';
+      h.name = 'remover_foto';
+      h.id = 'remover_foto_flag';
+      h.value = '0';
+      form.appendChild(h);
+    }
+    return h;
+  }
+
+  remover.addEventListener('click', function () {
+    if (!confirm("Deseja realmente remover a foto atual?")) return;
+    // limpa seleção de arquivo
+    input.value = '';
+    // mostra imagem padrão localmente
+    preview.src = defaultUrl;
+    // atualiza top avatars
+    const topAvatar = document.querySelector('.user-avatar');
+    const dropAvatar = document.querySelector('.dropdown-avatar');
+    if (topAvatar) topAvatar.src = defaultUrl;
+    if (dropAvatar) dropAvatar.src = defaultUrl;
+
+    // mostra aviso
+    if (notice) {
+      notice.textContent = "Removida localmente. Clique em Salvar alterações para confirmar.";
+      notice.style.display = 'block';
+    }
+
+    // marca flag para o servidor remover ao salvar
+    const flag = ensureHiddenFlag();
+    flag.value = '1';
+  });
+
+  // se o usuário escolher um arquivo depois de marcar remoção, resetar a flag
+  input.addEventListener('change', () => {
+    const flag = document.getElementById('remover_foto_flag');
+    if (flag) flag.value = '0';
+  });
+
+})();
+    </script>
+    
+</body>
+</html>

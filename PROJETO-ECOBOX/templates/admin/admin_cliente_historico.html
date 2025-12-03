@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Histórico do Cliente — EcoBox Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+       background: #eaf3ea;
+      font-family:"Poppins",sans-serif;
+      color:#0d2b1d;
+      margin:0;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width:260px;
+      background:#0d2b1d;
+      min-height:100vh;
+      padding:28px 22px;
+      color:#fff;
+      position:fixed;
+      display:flex;
+      flex-direction:column;
+      box-shadow:3px 0 18px rgba(0,0,0,0.18);
+    }
+    .sidebar h3 {
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:20px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+    .sidebar a {
+      text-decoration:none;
+      color:#dceee6;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:500;
+      transition:.25s;
+      opacity:.85;
+      margin-bottom:6px;
+    }
+    .sidebar a:hover {
+      background:rgba(255,255,255,0.13);
+      opacity:1;
+      transform:translateX(4px);
+    }
+    .sidebar a.active {
+      background:#1a4e37;
+      border-left:5px solid #41c77a;
+      padding-left:10px;
+      opacity:1;
+    }
+
+    /* MAIN */
+    .content {
+      margin-left:260px;
+      padding:40px 50px;
+      max-width:1600px;
+    }
+
+    /* HEADER DO CLIENTE */
+    .cliente-header {
+      background:white;
+      padding:30px;
+      border-radius:20px;
+      box-shadow:0 6px 22px rgba(0,0,0,0.07);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:32px;
+    }
+
+    .cliente-info {
+      display:flex;
+      align-items:center;
+      gap:22px;
+    }
+
+    .cliente-foto {
+      width:95px;
+      height:95px;
+      border-radius:14px;
+      object-fit:cover;
+      box-shadow:0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .cliente-info h2 {
+      font-size:26px;
+      font-weight:900;
+      margin:0;
+    }
+    .cliente-info .muted {
+      color:#5f6c67;
+      font-size:14px;
+    }
+
+    /* CARDS */
+    .card-pro {
+      background:white;
+      padding:26px;
+      border-radius:18px;
+      box-shadow:0 8px 26px rgba(0,0,0,0.05);
+      margin-bottom:26px;
+    }
+
+    .card-title {
+      font-weight:800;
+      font-size:20px;
+      margin-bottom:20px;
+    }
+
+    /* TABLE */
+    table thead {
+      background:#eef5f1;
+      font-weight:700;
+    }
+    table tbody tr:hover {
+      background:#f6faf8;
+    }
+
+    /* BADGES STATUS */
+    .status-pendente { background:#ffc107 !important; }
+    .status-processando { background:#0dcaf0 !important; }
+    .status-enviado { background:#0d6efd !important; }
+    .status-entregue { background:#198754 !important; }
+    .status-cancelado { background:#dc3545 !important; }
+
+    /* LOG CARDS */
+    .log-card {
+      background:white;
+      padding:20px;
+      border-radius:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.05);
+      margin-bottom:14px;
+      border-left:5px solid #41c77a;
+    }
+    .log-card time {
+      font-size:13px;
+      color:#6d7a77;
+    }
+    .log-card .acao {
+      font-size:17px;
+      font-weight:700;
+      margin-top:8px;
+      color:#0d2b1d;
+    }
+    .log-card .detalhes {
+      color:#64736d;
+      font-size:14px;
+      margin-top:4px;
+      margin-bottom:10px;
+    }
+    .pre-meta {
+      background:#f8f9f9;
+      border-radius:10px;
+      padding:10px;
+      border:1px solid #e1e4e3;
+      font-size:13px;
+      white-space:pre-wrap;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="d-flex">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>EcoBox Admin</h3>
+    <a href="/admin/estatisticas"><i data-lucide="bar-chart-3"></i>Estatísticas</a>
+    <a href="/admin/produtos"><i data-lucide="package"></i>Produtos</a>
+    <a href="/admin/pedidos"><i data-lucide="receipt"></i>Pedidos</a>
+    <a href="/admin/clientes" class="active"><i data-lucide="users"></i>Clientes</a>
+    <hr>
+    <a href="/admin/logout"><i data-lucide="log-out"></i>Sair</a>
+  </div>
+
+  <main class="content">
+
+    <a href="/admin/clientes/{{ cliente.id }}" class="text-decoration-none mb-3 d-inline-flex align-items-center">
+      <i data-lucide="arrow-left"></i><span class="ms-2">Voltar ao cliente</span>
+    </a>
+
+    <!-- CABEÇALHO -->
+    <div class="cliente-header">
+      <div class="cliente-info">
+        <img src="{{ cliente.foto_usuario }}" class="cliente-foto">
+
+        <div>
+          <h2>{{ cliente.nome }}</h2>
+          <div class="muted">{{ cliente.email }}</div>
+          <div class="muted mt-1">ID: #{{ cliente.id }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a class="btn btn-soft" href="/admin/clientes/{{ cliente.id }}/editar">Editar</a>
+        <a class="btn btn-outline-secondary" href="/admin/clientes">Voltar</a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- HISTÓRICO DE PEDIDOS -->
+      <!-- HISTÓRICO DE PEDIDOS (SUBSTITUIR ESTA PARTE NO TEMPLATE) -->
+<div class="col-lg-7">
+  <div class="card-pro">
+    <div class="card-title">Histórico de Pedidos</div>
+
+    {% if pedidos %}
+      <div class="table-responsive" style="overflow:auto;">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th style="width:80px">ID</th>
+              <th style="min-width:320px">Produto</th>
+              <th style="width:120px">Total</th>
+              <th style="width:140px">Status</th>
+              <th style="width:180px">Data</th>
+              <th class="text-end" style="width:120px">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for p in pedidos %}
+            <tr>
+              <td>#{{ p.id }}</td>
+
+              <!-- Produto: thumbnail + nome (wrap) -->
+              <td>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  {% if p.produto_imagem %}
+                    <img src="{{ url_for('static', filename='produtos/' ~ p.produto_imagem) }}"
+                         alt="{{ p.produto_nome or 'produto' }}"
+                         style="width:64px; height:64px; object-fit:cover; border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,0.06);">
+                  {% else %}
+                    <div style="width:64px; height:64px; border-radius:10px; background:#f0f3f2; display:inline-flex; align-items:center; justify-content:center; color:#94a194;">
+                      <i data-lucide="box"></i>
+                    </div>
+                  {% endif %}
+
+                  <div style="min-width:0;">
+                    <div style="font-weight:700; font-size:15px; white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+                      {{ p.produto_nome or '—' }}
+                    </div>
+                    <!-- você pode escolher mostrar quantidade resumida aqui se quiser -->
+                    <div style="font-size:13px; color:#5f6c67; margin-top:6px; white-space:normal;">ID pedido: #{{ p.id }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <td>R$ {{ '%.2f'|format(p.total) }}</td>
+
+              <td>
+                <span class="badge status-{{ p.status }}" style="padding:8px 12px; border-radius:999px; text-transform:capitalize;">
+                  {{ p.status }}
+                </span>
+              </td>
+
+              <td>{{ p.data_.strftime('%d/%m/%Y %H:%M') if p.data_ else '-' }}</td>
+
+              <td class="text-end">
+                <a href="/admin/pedidos/{{ p.id }}" class="btn btn-sm btn-outline-primary">Ver</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted">Nenhum pedido encontrado.</p>
+    {% endif %}
+  </div>
+</div>
+
+
+      <!-- LOGS DE ATIVIDADE -->
+      <div class="col-lg-6">
+        <div class="card-pro">
+          <div class="card-title">Atividades do Cliente</div>
+
+          {% if historico %}
+            {% for h in historico %}
+            <div class="log-card">
+              <time>{{ h.criado_em.strftime('%d/%m/%Y %H:%M') }}</time>
+
+              <div class="acao">{{ h.acao }}</div>
+
+              {% if h.detalhes %}
+              <div class="detalhes">{{ h.detalhes }}</div>
+              {% endif %}
+
+              {% if h.meta %}
+              <pre class="pre-meta">{{ h.meta }}</pre>
+              {% endif %}
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted">Nenhuma atividade registrada.</p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script> lucide.createIcons(); </script>
+</body>
+</html>

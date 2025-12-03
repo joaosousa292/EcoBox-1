@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EcoBox — Sobre Nós</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* ... (SEU CÓDIGO CSS INTACTO) ... */
+
+        :root {
+            --bg1: #0d2b1d; /* verde escuro */
+            --bg2: #1c140a; /* marrom escuro */
+            --muted: rgba(255, 255, 255, 0.1);
+            --green-light: #65ff7a;
+            --green-mid: #3fbf66;
+            --green-dark: #1a512d;
+            --brown-dark: #1c140a;
+        }
+
+        * {box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif;}
+        body {
+            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* ---------------------- ESTILOS DO HEADER (REPETIDOS) ---------------------- */
+        header {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(13, 43, 29, 0.9);
+            padding: 18px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+        }
+
+        nav {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        nav a {
+            position: relative;
+            color: #c8ffb8;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding-bottom: 6px;
+        }
+
+        nav a:hover {
+            color: #a5ff77;
+            transform: translateY(-2px);
+        }
+
+        nav a.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 100%;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+            box-shadow: 0 0 10px rgba(101, 255, 122, 0.7);
+            animation: glowline 1.6s ease-in-out infinite alternate;
+        }
+
+        nav i[data-lucide] {width: 18px; height: 18px;}
+
+        @keyframes glowline {
+            from {opacity: 0.7; box-shadow: 0 0 6px rgba(101, 255, 122, 0.4);}
+            to {opacity: 1; box-shadow: 0 0 14px rgba(101, 255, 122, 0.9);}
+        }
+        /* ---------------------- FIM ESTILOS DO HEADER ---------------------- */
+        
+        main {
+            flex: 1;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .about-header {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .about-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--green-light), #d6ffb2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-title {
+            width: 100%;
+            max-width: 1000px;
+            font-size: 28px;
+            color: var(--green-light);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--muted);
+        }
+        
+        /* ---------------------- ESTILOS DOS MEMBROS/CARDS ---------------------- */
+        .members-grid {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 30px;
+            justify-content: center; 
+        }
+        
+        .member-card {
+            background: rgba(30, 60, 40, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            width: 240px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(101, 255, 122, 0.4);
+        }
+
+        .member-photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 0;
+            object-fit: cover;
+            margin: 0 auto 15px; 
+            border: 3px solid var(--green-mid);
+            background-color: #fff;
+        }
+        
+        .member-card h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: var(--green-light);
+        }
+
+        .member-card p {
+            font-size: 14px;
+            color: #c8ffb8;
+        }
+        
+        /* Descrição da Iniciativa */
+        .initiative-description {
+            width: 100%;
+            max-width: 1000px;
+            font-size: 18px;
+            color: #d3f5d8;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 12px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #d3f5d8;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.08));
+        }
+        .floating-cart {
+  position: fixed;
+  top: 75px; /* distância do topo da página */
+  right: 25px; /* distância da direita da página */
+  background: linear-gradient(135deg, #3fbf66, #65ff7a);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100; /* acima de tudo */
+}
+.floating-cart:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.floating-cart i[data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+.header-support {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  color: #c8ffb8;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.header-support:hover {
+  color: #a5ff77;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+.header-support i[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* POSIÇÃO GERAL */
+/* --- POSICIONAMENTO --- */
+.user-menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 200;
+}
+
+.user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* --- AVATAR CLEAN --- */
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffffcc;
+  background: #fff;
+}
+
+/* --- NOME + EMAIL AO LADO --- */
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #eee;
+}
+
+
+/* --- DROPDOWN PROFISSIONAL --- */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 230px;
+
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+.user-dropdown.show {
+  display: block;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Conteúdo do topo */
+.dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-top strong {
+  font-size: 14px;
+  color: #222;
+}
+
+.dropdown-top small {
+  font-size: 12px;
+  color: #666;
+}
+
+.time-online {
+  font-size: 12px;
+  color: #2a7a3b;
+  font-weight: 600;
+}
+
+/* Links do menu */
+.user-dropdown a {
+  display: block;
+  padding: 8px 5px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+
+@keyframes dropdownFade {
+  from {opacity: 0; transform: translateY(-6px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Ajusta a nav-center para não encostar na bolinha */
+.nav-center {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex: 1;
+}
+.support-right {
+  position: absolute;
+  top: 18px;
+  right: 56px;
+  color: #c8ffb8;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.support-right:hover { color: #a5ff77; }
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <!-- PERFIL - canto superior esquerdo -->
+<div class="user-menu">
+
+  <!-- Avatar + nome -->
+  <div class="user-wrapper" onclick="toggleUserMenu()">
+
+    <img class="user-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" 
+         alt="Perfil">
+
+    <div class="user-preview">
+      <span class="user-name">{{ usuario }}</span>
+      <span class="user-email">{{ email }}</span>
+    </div>
+
+  </div>
+
+  <!-- Mini menu -->
+  <div class="user-dropdown" id="userDropdown">
+    <div class="dropdown-top">
+      <img class="dropdown-avatar" 
+         src="{{ fotoUsuario or url_for('static', filename='img/padrao_foto.png') }}" >
+      <div>
+        <strong>{{ usuario }}</strong>
+        <small>{{ email }}</small><br>
+        <span class="time-online">⏳ {{ horas_online }}h online</span>
+      </div>
+    </div>
+
+    <hr>
+
+    <a href="/perfil">Configurações</a>
+    <a href="#" onclick="confirmarSaida()">Sair</a>
+  </div>
+
+</div>
+
+
+
+  <nav>
+    <a href="/site"><i data-lucide="home"></i> Início</a>
+    <a href="/loja"><i data-lucide="shopping-bag"></i> Loja</a>
+    <a href="/historia"><i data-lucide="book-open"></i> Nossa História</a>
+  </nav>
+
+  <!-- 🎧 SUPORTE → canto superior direito -->
+  <a href="/suporte" class="header-support">
+    <i data-lucide="headphones"></i>
+    <span>Suporte</span>
+  </a>
+  <script>
+    function confirmarSaida() {
+      if (confirm("Tem certeza que deseja sair da sua conta?")) {
+        window.location.href = "/visitante";
+      }
+    }
+  </script>
+
+      
+    </header>
+
+    <script>
+function confirmarSaida() {
+  if (confirm("Tem certeza que deseja sair da sua conta?")) {
+    window.location.href = "/visitante";
+  }
+}
+lucide.createIcons();
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.closest('.user-menu')) {
+      document.getElementById("userDropdown").classList.remove("show");
+    }
+  }
+</script>
+    
+    <a href="/carrinho" class="floating-cart" title="Carrinho">
+  <i data-lucide="shopping-cart"></i>
+</a>
+
+    <main>
+        <section class="about-header">
+            <h1>🌿 Sobre a EcoBox</h1>
+        </section>
+
+        <div class="initiative-description">
+            <p>A EcoBox nasceu de uma iniciativa inovadora, fruto do trabalho e da visão do PC P, que buscaram criar uma plataforma dedicada à sustentabilidade e ao comércio justo. Esta é a equipe que deu vida ao projeto:</p>
+        </div>
+        
+        <h2 class="section-title">✨ Idealizadores (PCP)</h2>
+        <div class="members-grid">
+            
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/Amanda.jpg') }}" alt="Foto da Amanda" class="member-photo">
+                <h3>Amanda</h3>
+            </div>
+            
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/isa.jpg') }}" alt="Foto da Isadora" class="member-photo">
+                <h3>Isadora</h3>
+            </div>
+
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/pedro.jpg') }}" alt="Foto do Pedro" class="member-photo">
+                <h3>Pedro</h3>
+            </div>
+
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/davi.jpg') }}" alt="Foto do Davi" class="member-photo">
+                <h3>Davi</h3>
+            </div>
+
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/alan.jpg') }}" alt="Foto do Alan" class="member-photo">
+                <h3>Alan</h3>
+            </div>
+            
+        </div>
+        
+        <h2 class="section-title">💻 Desenvolvedores do Projeto</h2>
+        <div class="members-grid">
+            
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/joao.jpg') }}" alt="Foto do Desenvolvedor João" class="member-photo">
+                <h3>João</h3>
+            </div>
+            
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/felipe.jpg') }}" alt="Foto do Desenvolvedor Felipe Afonso" class="member-photo">
+                <h3>Felipe Afonso</h3>
+            </div>
+
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/anthony.jpg') }}" alt="Foto do Desenvolvedor Antony" class="member-photo">
+                <h3>Antony</h3>
+            </div>
+
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/lucas.jpg') }}" alt="Foto do Desenvolvedor João" class="member-photo">
+                <h3>Lucas</h3>
+            </div>
+            
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='imagens/gabriel.jpg') }}" alt="Foto do Desenvolvedor Gabriel" class="member-photo">
+                <h3>Gabriel</h3>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>© 2025 EcoBox — Tecnologia Sustentável.</footer>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
